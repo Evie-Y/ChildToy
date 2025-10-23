@@ -23,16 +23,25 @@ class ChildToy():
     def mkHoles(self):
         """ Makes Hole Shapes in Cube """
         # create subdivision based on hole number
-        cmds.setAttr("polyCube1.subdivisionsWidth", 2)
-        cmds.setAttr("polyCube1.subdivisionsWidth", 2)
-        cmds.setAttr("polyCube1.subdivisionsWidth", 2)
+        # different procedures if holes isnt even per side
+        holes_per_side = self.hole/2
+        cmds.setAttr("polyCube1.subdivisionsWidth", holes_per_side)
+        cmds.setAttr("polyCube1.subdivisionsWidth", holes_per_side)
+        cmds.setAttr("polyCube1.subdivisionsWidth", holes_per_side)
         pass
 
     def mkLid(self):
         """ Makes Lid of Cube """
         # create lid
         pass
-
+    
+    def is_odd(num):
+        if num//2 =! 0
+            # num is odd
+            return True
+        else:
+            # num is even
+            return False
 # Prototype
     # Child's blocks toy
 # change name
