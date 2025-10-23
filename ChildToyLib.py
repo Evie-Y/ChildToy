@@ -24,10 +24,19 @@ class ChildToy():
         """ Makes Hole Shapes in Cube """
         # create subdivision based on hole number
         # different procedures if holes isnt even per side
-        holes_per_side = self.hole/2
-        cmds.setAttr("polyCube1.subdivisionsWidth", holes_per_side)
-        cmds.setAttr("polyCube1.subdivisionsWidth", holes_per_side)
-        cmds.setAttr("polyCube1.subdivisionsWidth", holes_per_side)
+        number_of_holes = self.is_odd(self.hole)
+        if number_of_holes == True:
+            pass
+            # TODO: implement odd numbers
+        if number_of_holes == False:
+            # for 2, 4, 6
+            # max 6
+            # ex 6: 3x2
+            holes_per_col = 2
+            holes_per_row = self.hole/2
+        cmds.setAttr("polyCube1.subdivisionsWidth", holes_per_col)
+        cmds.setAttr("polyCube1.subdivisionsHeight", holes_per_row)
+        cmds.setAttr("polyCube1.subdivisionsDepth", holes_per_col)
         pass
 
     def mkLid(self):
