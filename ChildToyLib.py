@@ -15,13 +15,7 @@ class ChildToy():
         # move Y axis to origin
         cmds.move(0, self.size/2, 0)
 
-    
-    def mkShapes(self):
-        """ Makes Block Shapes """
-        pass
-
-    def mkHoles(self):
-        """ Makes Hole Shapes in Cube """
+    def mkHolePlacements(self):
         # create subdivision based on hole number
         # different procedures if holes isnt even per side
         number_of_holes = self.is_odd(self.hole)
@@ -34,6 +28,14 @@ class ChildToy():
             # ex 6: 3x2
             holes_per_col = 2
             holes_per_row = self.hole/2
+        return holes_per_row and holes_per_col
+
+    def mkShapes(self):
+        """ Makes Block Shapes """
+        pass
+
+    def mkHoles(self, holes_per_row, holes_per_col):
+        """ Makes Hole Shapes in Cube """
         cmds.setAttr("polyCube1.subdivisionsWidth", holes_per_col)
         cmds.setAttr("polyCube1.subdivisionsHeight", holes_per_row)
         cmds.setAttr("polyCube1.subdivisionsDepth", holes_per_col)
