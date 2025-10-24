@@ -24,10 +24,40 @@ class ChildToy():
         """ Makes Block Shapes """
         # TODO: make cube shapes for holes
         # create plane for number of holes
+        cmds.polyPlane(name='shape')
         # edit subdivisions
         # make different shapes
+        # each shape own function
+            # star
+            # rectangle
+            # circle
+            # star
+            # heart
+            # wide half circle
+            # triangle
+            # pentagon?
+            # clover?
+            # diamond?
         pass
         
+    def mkRectanglePlane(self):
+        """ Makes Rectangle Shapes """
+        # create plane for number of holes
+        cmds.polyPlane(name='shape')
+        # edit subdivisions
+        # make different shapes
+        # each shape own function
+            # star
+            # rectangle
+            # circle
+            # star
+            # heart
+            # wide half circle
+            # triangle
+            # pentagon?
+            # clover?
+            # diamond?
+            
     def mkHoles(self):
         """ Makes Hole Shapes in Cube """
         # create subdivision based on hole number
@@ -67,6 +97,7 @@ class ChildToy():
     def build(self):
         self.mkCube()
         self.mkLid()
+        self.mkShapes()
 
 
 
