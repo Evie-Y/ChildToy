@@ -25,7 +25,7 @@ class ChildToy():
         # freeze transformations
         cmds.makeIdentity(apply=True)
 
-    def convertsPlaneToBlock(self):
+    def convertsPlaneToBlock(self, shape_name):
         """ Make Plane Into Block"""
         # turns planes into 3D blocks
         # make different shapes
@@ -40,6 +40,16 @@ class ChildToy():
             # pentagon?
             # clover?
             # diamond?
+        # select corresponding plane shape
+        # TODO: implement select random plane
+            # for now, select rectangle for testing
+        # make width=self.size/2
+        cmds.select(shape_name)
+        cmds.xform(shape_name, translation=[0, 0, 90])
+        # extrude not working becasue plane
+        cmds.extrude('rectanglePlane1', scale=self.size/2)
+        # rotate block 90 degrees
+        # move block to random place from end of grid to toy
         pass
         
     def mkRectanglePlane(self):
@@ -95,15 +105,22 @@ class ChildToy():
             
     def build(self):
         # list
+        # TODO: make shape randomizer w/ lists
         shapes = []
+        # might delete later if unused vvv
         blocks = []
         self.mkCube()
         self.mkLid()
         self.mkRectanglePlane()
         # example loop
-        # for block_num in range(self.hole*4):
+        for block_num in range(self.hole*4):
             # make random plane shape for hole
+            shape_name = self.mkRectanglePlane()
+            # adds to list
+            shapes.append(shape_name)
             # make corresponding block for hole
+            self.convertsPlaneToBlock(shape_name)
+            # TODO make planes into holes on toy function
         # TODO: how to put planes into list to randomize
 
 
@@ -123,6 +140,8 @@ class ChildToy():
 # make cube
 # make blocks
 # make lid
+
+# is there a thing as too much squedocode, probably
 
 
 if __name__ == "__main__":
