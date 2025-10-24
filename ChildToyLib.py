@@ -15,15 +15,24 @@ class ChildToy():
         cmds.rename('ShapeSortingCube')
         # move Y axis to origin
         cmds.move(0, self.size/2, 0)
+        # delete wanted face
+        cmds.delete('ShapeSortingCube.f[1]')
+        # reselect cube
+        cmds.select('ShapeSortingCube')
 
     def mkShapes(self):
         """ Makes Block Shapes """
+        # TODO: make cube shapes for holes
+        # create plane for number of holes
+        # edit subdivisions
+        # make different shapes
         pass
         
     def mkHoles(self):
         """ Makes Hole Shapes in Cube """
         # create subdivision based on hole number
         # different procedures if holes isnt even per side
+        # TODO: implement different solution than current one
         number_of_holes = self.is_odd(self.hole)
         if number_of_holes == True:
             pass
@@ -40,7 +49,6 @@ class ChildToy():
 
     def mkLid(self):
         """ Makes Lid of Cube """
-        # delete face
         # make lid w/ modified height
         cmds.polyCube(depth=self.size, height=self.size/10, 
                                          width=self.size)
@@ -49,8 +57,6 @@ class ChildToy():
         # move Y axis to origin
         cmds.move(0, self.size+(self.size/20), 0)
         # edit pivot?
-
-        pass
     
     def is_odd(self, num):
         if num % 2 == 0:
@@ -60,8 +66,8 @@ class ChildToy():
             
     def build(self):
         self.mkCube()
-        self.mkHoles()
         self.mkLid()
+
 
 
 
