@@ -1,13 +1,16 @@
 import maya.cmds as cmds
 from maya import cmds
+import random
 
 class ChildToy():
     def __init__(self):
         self.size = 5
-        self.hole = 8
+        self.hole = 4
+        self.shape_size = self.size/self.hole
 
     def mkCube(self):
         """ Makes Cube """
+        '''DONE'''
         # creates cube based on selected size
         cmds.polyCube(depth=self.size, height=self.size, 
                                          width=self.size)
@@ -19,15 +22,14 @@ class ChildToy():
         cmds.delete('ShapeSortingCube.f[1]')
         # reselect cube
         cmds.select('ShapeSortingCube')
+        # freeze transformations
+        cmds.makeIdentity(apply=True)
 
-    def mkShapes(self):
-        """ Makes Block Shapes """
-        # TODO: make cube shapes for holes
-        # create plane for number of holes
-        cmds.polyPlane(name='shape')
-        # edit subdivisions
+    def convertsPlaneToBlock(self):
+        """ Make Plane Into Block"""
+        # turns planes into 3D blocks
         # make different shapes
-        # each shape own function
+        # each shape/hole/block own function
             # star
             # rectangle
             # circle
@@ -42,22 +44,14 @@ class ChildToy():
         
     def mkRectanglePlane(self):
         """ Makes Rectangle Shapes """
-        # create plane for number of holes
-        cmds.polyPlane(name='shape')
-        # edit subdivisions
-        # make different shapes
-        # each shape own function
-            # star
-            # rectangle
-            # circle
-            # star
-            # heart
-            # wide half circle
-            # triangle
-            # pentagon?
-            # clover?
-            # diamond?
-            
+        # create plane for rectangle
+        # edit scale & name
+        cmds.polyPlane(name='rectanglePlane1', height=self.shape_size*self.
+                       shape_size, width=(self.shape_size*self.shape_size)/3)
+        # subdivisions for rectangle
+        cmds.setAttr('polyPlane1.subdivisionsHeight', 1)
+        cmds.setAttr('polyPlane1.subdivisionsWidth', 1)
+
     def mkHoles(self):
         """ Makes Hole Shapes in Cube """
         # create subdivision based on hole number
@@ -79,6 +73,7 @@ class ChildToy():
 
     def mkLid(self):
         """ Makes Lid of Cube """
+        '''DONE'''
         # make lid w/ modified height
         cmds.polyCube(depth=self.size, height=self.size/10, 
                                          width=self.size)
@@ -87,17 +82,30 @@ class ChildToy():
         # move Y axis to origin
         cmds.move(0, self.size+(self.size/20), 0)
         # edit pivot?
+        # freeze transformations
+        cmds.makeIdentity(apply=True)
     
-    def is_odd(self, num):
+    def isOdd(self, num):
+        '''DONE'''
         if num % 2 == 0:
             return False
         else:
             return True
+        
             
     def build(self):
+        # list
+        shapes = []
+        blocks = []
         self.mkCube()
         self.mkLid()
-        self.mkShapes()
+        self.mkRectanglePlane()
+        # example loop
+        # for block_num in range(self.hole*4):
+            # make random plane shape for hole
+            # make corresponding block for hole
+        # TODO: how to put planes into list to randomize
+
 
 
 
