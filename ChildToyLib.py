@@ -47,7 +47,7 @@ class ChildToy():
         # renames lid
         cmds.rename('ShapeSortingCubeLid')
         # move Y axis to origin
-        cmds.move(0, self.size+(self.size/2), 0)
+        cmds.move(0, self.size+(self.size/20), 0)
         # edit pivot?
 
         pass
