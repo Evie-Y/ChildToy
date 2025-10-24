@@ -7,6 +7,8 @@ class ChildToy():
         self.size = 5
         self.hole = 4
         self.shape_size = self.size/self.hole
+        self.block_suffix = ('_block1')
+        self.plane_suffix = ('_plane1')
 
     def mkCube(self):
         """ Makes Cube """
@@ -43,24 +45,30 @@ class ChildToy():
         # select corresponding plane shape
         # TODO: implement select random plane
             # for now, select rectangle for testing
-        # make width=self.size/2
-        cmds.select(shape_name)
-        cmds.xform(shape_name, translation=[0, 0, 90])
-        # extrude not working becasue plane
-        cmds.extrude('rectanglePlane1', scale=self.size/2)
+        print(shape_name)
+        cmds.select(f"{shape_name[0]}.f[0:]", replace=True)
+        # extrude
+        cmds.polyExtrudeFacet(thickness=self.size/2)
         # rotate block 90 degrees
+        cmds.select({shape_name[0]})
+        cmds.rotate(90, 0, 0)
         # move block to random place from end of grid to toy
+        # freeze transformations
+        cmds.makeIdentity(apply=True)
         pass
         
     def mkRectanglePlane(self):
         """ Makes Rectangle Shapes """
+        '''DONE'''
         # create plane for rectangle
-        # edit scale & name
-        cmds.polyPlane(name='rectanglePlane1', height=self.shape_size*self.
-                       shape_size, width=(self.shape_size*self.shape_size)/3)
-        # subdivisions for rectangle
-        cmds.setAttr('polyPlane1.subdivisionsHeight', 1)
-        cmds.setAttr('polyPlane1.subdivisionsWidth', 1)
+        # edit name & subdivisions
+        rectangle = cmds.polyPlane(name='rectanglePlane1', 
+                                   subdivisionsHeight=1, subdivisionsWidth=1)
+        # scale it
+        cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
+                                                        self.shape_size)/3)
+        return rectangle
+        # select face and not whole plane
 
     def mkHoles(self):
         """ Makes Hole Shapes in Cube """
@@ -101,6 +109,10 @@ class ChildToy():
             return False
         else:
             return True
+        
+    def rename(self):
+        # eventually rename blocks to have _block suffix
+        # rename plane to hole suffix
         
             
     def build(self):
