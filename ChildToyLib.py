@@ -14,8 +14,9 @@ class ChildToy():
         """ Makes Cube """
         '''DONE'''
         # creates cube based on selected size
-        cmds.polyCube(depth=self.size, height=self.size, 
+        box = cmds.polyCube(depth=self.size, height=self.size, 
                                          width=self.size)
+        print(box)
         # renames cube to toy name
         cmds.rename('ShapeSortingCube')
         # move Y axis to origin
@@ -60,15 +61,13 @@ class ChildToy():
     def mkRectanglePlane(self):
         """ Makes Rectangle Shapes """
         '''DONE'''
-        # create plane for rectangle
         # edit name & subdivisions
-        rectangle = cmds.polyPlane(name='rectanglePlane1', 
+        rectangle = cmds.polyPlane(name='rectanglePlane0', 
                                    subdivisionsHeight=1, subdivisionsWidth=1)
         # scale it
         cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
                                                         self.shape_size)/3)
         return rectangle
-        # select face and not whole plane
 
     def mkHoles(self):
         """ Makes Hole Shapes in Cube """
@@ -93,8 +92,9 @@ class ChildToy():
         """ Makes Lid of Cube """
         '''DONE'''
         # make lid w/ modified height
-        cmds.polyCube(depth=self.size, height=self.size/10, 
+        lid =cmds.polyCube(depth=self.size, height=self.size/10, 
                                          width=self.size)
+        print(lid)
         # renames lid
         cmds.rename('ShapeSortingCubeLid')
         # move Y axis to origin
@@ -113,7 +113,7 @@ class ChildToy():
     def rename(self):
         # eventually rename blocks to have _block suffix
         # rename plane to hole suffix
-        
+        pass
             
     def build(self):
         # list
