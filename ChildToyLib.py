@@ -8,6 +8,15 @@ class ChildToy():
         self.hole = 4
         self.shape_size = self.size/self.hole
 
+    def mkFloor(self):
+        """ Makes Floor"""
+        # edit name & subdivisions
+        floor = cmds.polyPlane(name='Floor',
+                            subdivisionsHeight=1, subdivisionsWidth=1)
+        # scale x,y,z
+        cmds.scale(self.size * 5, 0, self.size * 5)
+        return floor
+
     def mkCube(self):
         """ Makes Cube """
         '''DONE'''
@@ -52,7 +61,6 @@ class ChildToy():
         # rotate block 90 degrees
         cmds.select({shape_block[0]})
         cmds.rotate(90, 0, 0)
-        cmds.move(0, self.size/4, 0)
         return shape_block
 
     def moveBlock(self, shape_block):
@@ -63,19 +71,21 @@ class ChildToy():
         # select block
         cmds.select(shape_block)
         # move blok random xy
-        cmds.move(x_pos, 0, y_pos)
+        # TODO: chance y per shape type
+        cmds.move(x_pos, ((self.shape_size * self.shape_size)/3)/2, y_pos)
         # freeze transformations
-        cmds.makeIdentity(apply=True)
+        # cmds.makeIdentity(apply=True)
         return shape_block
     
     def get_chance(self):
-        # make random chance percentage
+        """ Makes Random Percentage"""
+        # make random chance percentage from floor end to cube perimeter
         # move from self.size-12, skip self.size-neg_self.size, neg_self.size-neg_12
         if random.random() > .5:
-            random_space = random.randrange(self.size, 12)
+            random_space = random.randrange(self.size, self.size * 5)
             return random_space
         else:
-            random_space = random.randrange(-12, (-1*self.size))
+            random_space = random.randrange(-1*(self.size * 5), (-1*self.size))
             return random_space
         
         
@@ -85,7 +95,7 @@ class ChildToy():
         # edit name & subdivisions
         rectangle_plane = cmds.polyPlane(name='rectanglePlane1', 
                                    subdivisionsHeight=1, subdivisionsWidth=1)
-        # scale it
+        # scale x,y,z
         cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
                                                         self.shape_size)/3)
         return rectangle_plane
@@ -116,6 +126,13 @@ class ChildToy():
         # eventually rename blocks to have _block suffix
         # rename plane to hole suffix
         pass
+
+    def mkNonShapes(self):
+        ''' Make Everything But Shapes'''
+        self.mkCube()
+        self.mkLid()
+        self.mkFloor()
+
             
     def build(self):
         # list
@@ -123,8 +140,8 @@ class ChildToy():
         shapes = []
         # might delete later if unused vvv
         blocks = []
-        self.mkCube()
-        self.mkLid()
+        # make non-shapes
+        self.mkNonShapes()
         # example loop
         for idx in range(self.hole*4):
             # make random plane shape for hole
