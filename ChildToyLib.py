@@ -4,6 +4,8 @@ import random
 
 class ChildToy():
     def __init__(self):
+        # add more variables for shapes?
+        # remeber to delete '''DONE''' when finished
         self.size = 5
         self.hole = 4
         self.shape_size = self.size/self.hole
@@ -15,7 +17,7 @@ class ChildToy():
         floor = cmds.polyPlane(name='Floor',
                             subdivisionsHeight=1, subdivisionsWidth=1)
         # scale x,y,z
-        cmds.scale(self.size * 5, 0, self.size * 5)
+        cmds.scale(self.size * 6, 0, self.size * 6)
         return floor
 
     def mkCube(self):
@@ -69,16 +71,16 @@ class ChildToy():
         cmds.rotate(90, 0, 0)
         return shape_block
 
-    def moveBlock(self, shape_block):
+    def moveBlock(self, shape_block, shape_height):
         """ Move Block Around Grid """
         # variables
-        x_pos = self.getChanceLocation()
-        y_pos = self.getChanceLocation()
+        x_pos = self.getXChanceLocation()
+        z_pos = self.getZChanceLocation()
         # select block
         cmds.select(shape_block)
         # move block random xy
         # TODO: chance y per shape type
-        cmds.move(x_pos, ((self.shape_size * self.shape_size)/3)/2, y_pos)
+        cmds.move(x_pos, shape_height/2, z_pos)
         # freeze transformations
         # cmds.makeIdentity(apply=True)
         return shape_block
@@ -133,6 +135,7 @@ class ChildToy():
     def mkSemiOvalplane(self):
         """ Makes Semi-Oval Shapes """
         # semi-oval so it doesn't fit in circle hole
+        # might delete b/c repetitive
         # edit name & subdivisions
         semi_oval_plane = cmds.polyPlane(name='rectanglePlane1', 
                                    subdivisionsHeight=1, subdivisionsWidth=1)
@@ -149,16 +152,34 @@ class ChildToy():
         cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
                                                         self.shape_size)/3)
     
-    def getChanceLocation(self):
+    def getXChanceLocation(self):
         """ Picks Random Location"""
-        # make random chance percentage from floor end to cube perimeter
-        # move from self.size-12, skip self.size-neg_self.size, neg_self.size-neg_12
+        # pick random int
+        # from (floor end- shape thickness) to cube perimeter
+        shape_length = int(self.size/2)
         if random.random() > .5:
-            random_space = random.randrange(self.size, self.size * 5)
-            return random_space
+            random_x_space = random.randrange(self.size,
+                            (self.size * 3)-shape_length, shape_length)
+            return random_x_space
         else:
-            random_space = random.randrange(-1*(self.size * 5), (-1*self.size))
-            return random_space
+            random_x_space = random.randrange((-1*((self.size * 3)
+                            - shape_length)),(-1*self.size), shape_length)
+            return random_x_space
+        
+    def getZChanceLocation(self):
+        """ Picks Random Location"""
+        # pick random int
+        # from (floor end- shape thickness) to cube perimeter
+        #
+        shape_width = int(self.shape_size*self.shape_size)
+        if random.random() > .5:
+            random_z_space = random.randrange(self.size,
+                                            (self.size * 3)-shape_width, 3)
+            return random_z_space
+        else:
+            random_z_space = random.randrange((-1*((self.size * 3)-shape_width)),
+                                            (-1*self.size), 3)
+            return random_z_space
         
     def mkGroup(self):
         ''' Makes Group '''
@@ -167,6 +188,11 @@ class ChildToy():
     def getRandomShape(self):
         ''' Picks Random Shape'''
         # TODO: implement random shape pick
+
+    def getShapeHeight(self, shape):
+        ''' Get Shape Height'''
+        shape_height = cmds.getAttr(f"{shape[0]}.scaleZ")
+        return shape_height
     
     def isOdd(self, num):
         # might delete funct late if not useful
@@ -226,18 +252,23 @@ class ChildToy():
         self.mkLid()
         self.mkFloor()
 
+    # TODO: move planes to align w/ box
+    # TODO: turn planes into holes on box
+    # TODO: rename holes
+
             
     def build(self):
         # list
         # TODO: make shape randomizer w/ lists
+        # TODO: group lists
         shapes = []
-        # might delete later if unused vvv
         blocks = []
         # makes non-shapes
         self.mkNonShapes()
         # example loop
         for idx in range(self.hole*4):
             # make random plane shape for hole
+            # TODO: implement random
             shape_name = self.mkRectanglePlane()
             # adds to list
             shapes.append(shape_name)
@@ -245,8 +276,11 @@ class ChildToy():
             shape_block = self.convertsPlaneToBlock(shape_name)
             # adds to list
             blocks.append(shape_block)
-            self.moveBlock(shape_block)
+            shape_height = self.getShapeHeight(shape_name)
+            self.moveBlock(shape_block, shape_height)
+                # center pivot b4 moveBlock
             # TODO make planes into holes on toy function
+            # TOD0: dreeze shape transformations at end
         # TODO: how to put planes into list to randomize
 
 
