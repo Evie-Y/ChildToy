@@ -14,7 +14,6 @@ class ChildToy():
         # creates cube based on selected size
         box = cmds.polyCube(depth=self.size, height=self.size, 
                                          width=self.size)
-        print(box)
         # renames cube to toy name
         cmds.rename('ShapeSortingCube')
         # move Y axis to origin
@@ -53,17 +52,31 @@ class ChildToy():
         # rotate block 90 degrees
         cmds.select({shape_block[0]})
         cmds.rotate(90, 0, 0)
-        # freeze transformations
-        cmds.makeIdentity(apply=True)
         return shape_block
 
     def moveBlock(self, shape_block):
         """ Move Block Around Grid """
-        # move from self.size-12, skip self.size-neg_self.size, neg_self.size-neg_12
-        random_space = random.randrange(self.size, 12, 1)
+        # variables
+        x_pos = self.get_chance()
+        y_pos = self.get_chance
+        # select block
         cmds.select(shape_block)
-        cmds.move(random_space, 0, random_space)
+        # move blok random xy
+        cmds.move(x_pos, 0, y_pos)
+        # freeze transformations
+        cmds.makeIdentity(apply=True)
         return shape_block
+    
+    def get_chance(self):
+        # make random chance percentage
+        # move from self.size-12, skip self.size-neg_self.size, neg_self.size-neg_12
+        if random.random > .5:
+            random_space = random.randrange(self.size, 12, 1)
+            return random_space
+        else:
+            random_space = random.randrange((-1*self.size), -12, 1)
+            return random_space
+        
         
     def mkRectanglePlane(self):
         """ Makes Rectangle Shapes """
