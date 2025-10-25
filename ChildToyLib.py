@@ -7,8 +7,6 @@ class ChildToy():
         self.size = 5
         self.hole = 4
         self.shape_size = self.size/self.hole
-        self.block_suffix = ('_block1')
-        self.plane_suffix = ('_plane1')
 
     def mkCube(self):
         """ Makes Cube """
@@ -27,6 +25,7 @@ class ChildToy():
         cmds.select('ShapeSortingCube')
         # freeze transformations
         cmds.makeIdentity(apply=True)
+        return box
 
     def convertsPlaneToBlock(self, shape_name):
         """ Make Plane Into Block"""
@@ -54,11 +53,14 @@ class ChildToy():
         # rotate block 90 degrees
         cmds.select({shape_block[0]})
         cmds.rotate(90, 0, 0)
-        # move block to random place from end of grid to toy
-        # TODO: implement random 12, self.size
         # freeze transformations
         cmds.makeIdentity(apply=True)
-        pass
+        return shape_block
+
+    def moveBlock(shape_block):
+        # move block to random place from end of grid to toy
+        # TODO: implement random 12, self.size
+        
         
     def mkRectanglePlane(self):
         """ Makes Rectangle Shapes """
@@ -70,25 +72,6 @@ class ChildToy():
         cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
                                                         self.shape_size)/3)
         return rectangle_plane
-
-    def mkHoles(self):
-        """ Makes Hole Shapes in Cube """
-        # create subdivision based on hole number
-        # different procedures if holes isnt even per side
-        # TODO: implement different solution than current one
-        number_of_holes = self.is_odd(self.hole)
-        if number_of_holes == True:
-            pass
-            # TODO: implement odd numbers
-        if number_of_holes == False:
-            # for 2, 4, 6
-            # max 6
-            # ex 6: 3x2
-            holes_per_col = 2
-            holes_per_row = self.hole/2
-        cmds.setAttr("polyCube1.subdivisionsHeight", holes_per_col)
-        cmds.setAttr("polyCube1.subdivisionsWidth", holes_per_row)
-        cmds.setAttr("polyCube1.subdivisionsDepth", holes_per_row)
 
     def mkLid(self):
         """ Makes Lid of Cube """
@@ -103,6 +86,7 @@ class ChildToy():
         # edit pivot?
         # freeze transformations
         cmds.makeIdentity(apply=True)
+        return lid
     
     def isOdd(self, num):
         '''DONE'''
@@ -134,6 +118,7 @@ class ChildToy():
             shape_block = self.convertsPlaneToBlock(shape_name)
             # adds to list
             blocks.append(shape_block)
+            self.moveBlock(shape_block)
             # TODO make planes into holes on toy function
         # TODO: how to put planes into list to randomize
 
