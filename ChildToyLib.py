@@ -88,7 +88,6 @@ class ChildToy():
             random_space = random.randrange(-1*(self.size * 5), (-1*self.size))
             return random_space
         
-        
     def mkRectanglePlane(self):
         """ Makes Rectangle Shapes """
         '''DONE'''
@@ -99,7 +98,62 @@ class ChildToy():
         cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
                                                         self.shape_size)/3)
         return rectangle_plane
-
+    
+    def mkStarPlane(self):
+        """ Makes Star Shapes """
+        # edit name & subdivisions
+        star_plane = cmds.polyPlane(name='rectanglePlane1', 
+                                   subdivisionsHeight=1, subdivisionsWidth=1)
+        # scale x,y,z
+        cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
+                                                        self.shape_size)/3)
+        
+    def mkCirclePlane(self):
+        """ Makes Circle Shapes """
+        # edit name & subdivisions
+        circle_plane = cmds.polyPlane(name='rectanglePlane1', 
+                                   subdivisionsHeight=1, subdivisionsWidth=1)
+        # scale x,y,z
+        cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
+                                                        self.shape_size)/3)
+        
+    def mkHeartPlane(self):
+        """ Makes Heart Shapes """
+        # edit name & subdivisions
+        heart_plane = cmds.polyPlane(name='rectanglePlane1', 
+                                   subdivisionsHeight=1, subdivisionsWidth=1)
+        # scale x,y,z
+        cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
+                                                        self.shape_size)/3)
+        
+    def mkTriangleplane(self):
+        """ Makes Triangle Shapes """
+        # edit name & subdivisions
+        triangle_plane = cmds.polyPlane(name='rectanglePlane1', 
+                                   subdivisionsHeight=1, subdivisionsWidth=1)
+        # scale x,y,z
+        cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
+                                                        self.shape_size)/3)
+        
+    def mkSemiOvalplane(self):
+        """ Makes Semi-Oval Shapes """
+        # semi-oval so it doesn't fit in circle hole
+        # edit name & subdivisions
+        semi_oval_plane = cmds.polyPlane(name='rectanglePlane1', 
+                                   subdivisionsHeight=1, subdivisionsWidth=1)
+        # scale x,y,z
+        cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
+                                                        self.shape_size)/3)
+        
+    def mkTrapazoidPlane(self):
+        """ Makes Trapazoid Shapes """
+        # edit name & subdivisions
+        trapazoid_plane = cmds.polyPlane(name='rectanglePlane1', 
+                                   subdivisionsHeight=1, subdivisionsWidth=1)
+        # scale x,y,z
+        cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
+                                                        self.shape_size)/3)
+        
     def mkLid(self):
         """ Makes Lid of Cube """
         '''DONE'''
