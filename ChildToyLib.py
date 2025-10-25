@@ -46,7 +46,7 @@ class ChildToy():
         # TODO: implement select random plane
             # for now, select rectangle for testing
         cmds.select(f"{shape_name[0]}.f[0:]", replace=True)
-        shape_block = cmds.duplicate(shape_name, name='block1')
+        shape_block = cmds.duplicate(shape_name[0], name='block1')
         cmds.select(f"{shape_block[0]}.f[0:]", replace=True)
         # extrude
         cmds.polyExtrudeFacet(thickness=self.size/2)
@@ -57,10 +57,13 @@ class ChildToy():
         cmds.makeIdentity(apply=True)
         return shape_block
 
-    def moveBlock(shape_block):
-        # move block to random place from end of grid to toy
-        # TODO: implement random 12, self.size
-        
+    def moveBlock(self, shape_block):
+        """ Move Block Around Grid """
+        # move from self.size-12, skip self.size-neg_self.size, neg_self.size-neg_12
+        random_space = random.randrange(self.size, 12, 1)
+        cmds.select(shape_block)
+        cmds.move(random_space, 0, random_space)
+        return shape_block
         
     def mkRectanglePlane(self):
         """ Makes Rectangle Shapes """
