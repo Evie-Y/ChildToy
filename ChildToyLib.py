@@ -10,6 +10,7 @@ class ChildToy():
 
     def mkFloor(self):
         """ Makes Floor"""
+        '''DONE'''
         # edit name & subdivisions
         floor = cmds.polyPlane(name='Floor',
                             subdivisionsHeight=1, subdivisionsWidth=1)
@@ -34,25 +35,30 @@ class ChildToy():
         # freeze transformations
         cmds.makeIdentity(apply=True)
         return box
+    
+    def mkLid(self):
+        """ Makes Lid of Cube """
+        '''DONE'''
+        # make lid w/ modified height
+        lid =cmds.polyCube(depth=self.size, height=self.size/10, 
+                                         width=self.size)
+        # renames lid
+        cmds.rename('ShapeSortingCubeLid')
+        # move Y axis to origin
+        cmds.move(0, self.size+(self.size/20), 0)
+        # edit pivot?
+        # freeze transformations
+        cmds.makeIdentity(apply=True)
+        return lid
 
     def convertsPlaneToBlock(self, shape_name):
         """ Make Plane Into Block"""
-        # turns planes into 3D blocks
-        # make different shapes
-        # each shape/hole/block own function
-            # star
-            # rectangle
-            # circle
-            # star
-            # heart
-            # wide half circle
-            # triangle
             # pentagon?
             # clover?
             # diamond?
-        # select corresponding plane shape
         # TODO: implement select random plane
             # for now, select rectangle for testing
+        # select corresponding plane shape
         cmds.select(f"{shape_name[0]}.f[0:]", replace=True)
         shape_block = cmds.duplicate(shape_name[0], name='block1')
         cmds.select(f"{shape_block[0]}.f[0:]", replace=True)
@@ -66,27 +72,16 @@ class ChildToy():
     def moveBlock(self, shape_block):
         """ Move Block Around Grid """
         # variables
-        x_pos = self.get_chance()
-        y_pos = self.get_chance()
+        x_pos = self.getChanceLocation()
+        y_pos = self.getChanceLocation()
         # select block
         cmds.select(shape_block)
-        # move blok random xy
+        # move block random xy
         # TODO: chance y per shape type
         cmds.move(x_pos, ((self.shape_size * self.shape_size)/3)/2, y_pos)
         # freeze transformations
         # cmds.makeIdentity(apply=True)
         return shape_block
-    
-    def get_chance(self):
-        """ Makes Random Percentage"""
-        # make random chance percentage from floor end to cube perimeter
-        # move from self.size-12, skip self.size-neg_self.size, neg_self.size-neg_12
-        if random.random() > .5:
-            random_space = random.randrange(self.size, self.size * 5)
-            return random_space
-        else:
-            random_space = random.randrange(-1*(self.size * 5), (-1*self.size))
-            return random_space
         
     def mkRectanglePlane(self):
         """ Makes Rectangle Shapes """
@@ -153,33 +148,77 @@ class ChildToy():
         # scale x,y,z
         cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
                                                         self.shape_size)/3)
+    
+    def getChanceLocation(self):
+        """ Picks Random Location"""
+        # make random chance percentage from floor end to cube perimeter
+        # move from self.size-12, skip self.size-neg_self.size, neg_self.size-neg_12
+        if random.random() > .5:
+            random_space = random.randrange(self.size, self.size * 5)
+            return random_space
+        else:
+            random_space = random.randrange(-1*(self.size * 5), (-1*self.size))
+            return random_space
         
-    def mkLid(self):
-        """ Makes Lid of Cube """
-        '''DONE'''
-        # make lid w/ modified height
-        lid =cmds.polyCube(depth=self.size, height=self.size/10, 
-                                         width=self.size)
-        # renames lid
-        cmds.rename('ShapeSortingCubeLid')
-        # move Y axis to origin
-        cmds.move(0, self.size+(self.size/20), 0)
-        # edit pivot?
-        # freeze transformations
-        cmds.makeIdentity(apply=True)
-        return lid
+    def mkGroup(self):
+        ''' Makes Group '''
+        # TODO: make group
+        
+    def getRandomShape(self):
+        ''' Picks Random Shape'''
+        # TODO: implement random shape pick
     
     def isOdd(self, num):
+        # might delete funct late if not useful
         '''DONE'''
         if num % 2 == 0:
             return False
         else:
             return True
         
-    def rename(self):
+    def addSuffix(self):
+        ''' Adds Suffix/Correct Name Conventions'''
         # eventually rename blocks to have _block suffix
-        # rename plane to hole suffix
+        # rename plane to _hole suffix
+        # rename grps w/ _GRP
         pass
+
+    def mkNewName(self):
+        ''' Makes New Name '''
+        # TODO: make names
+        # name for master group
+        # name for shapes group
+        # name for blocks group
+        # name for non-shapes group
+
+    def editShapePivot(self):
+        ''' Edits Object Pivot'''
+        # TODO: implement feature
+        # TODO: decide how pivot works
+            # center pivot?
+            # pivot on bottom -> snap into hole
+
+    def editLidPivot(self):
+        ''' Edits Lid Pivot'''
+        # TODO: implement
+        # put pivot on bottom-back-center,
+        # so rig works correctly
+            
+    def mkLidRig(self):
+        ''' Makes Lid Rig '''
+        # TODO: make curve, edit curv, parent/constraint
+        # make control an arrow?
+
+    def mkCubeRig(self):
+        ''' Makes Cube Rig '''
+        # TODO: implement
+        # make control circle/square
+        # different collor?
+
+    def mkShapeRig(self):
+        ''' Makes SHape's Rig '''
+        # TODO: implement
+        # make control simple circle
 
     def mkNonShapes(self):
         ''' Make Everything But Shapes'''
@@ -194,7 +233,7 @@ class ChildToy():
         shapes = []
         # might delete later if unused vvv
         blocks = []
-        # make non-shapes
+        # makes non-shapes
         self.mkNonShapes()
         # example loop
         for idx in range(self.hole*4):
