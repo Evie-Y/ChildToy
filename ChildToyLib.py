@@ -46,8 +46,10 @@ class ChildToy():
         # select corresponding plane shape
         # TODO: implement select random plane
             # for now, select rectangle for testing
-        print(shape_name)
         cmds.select(f"{shape_name[0]}.f[0:]", replace=True)
+        shape_block = cmds.duplicate(shape_name, name='block1')
+        print(shape_name)
+        print(shape_block)
         # extrude
         cmds.polyExtrudeFacet(thickness=self.size/2)
         # rotate block 90 degrees
@@ -62,12 +64,12 @@ class ChildToy():
         """ Makes Rectangle Shapes """
         '''DONE'''
         # edit name & subdivisions
-        rectangle = cmds.polyPlane(name='rectanglePlane0', 
+        rectangle_plane = cmds.polyPlane(name='rectanglePlane1', 
                                    subdivisionsHeight=1, subdivisionsWidth=1)
         # scale it
         cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
                                                         self.shape_size)/3)
-        return rectangle
+        return rectangle_plane
 
     def mkHoles(self):
         """ Makes Hole Shapes in Cube """
@@ -125,7 +127,7 @@ class ChildToy():
         self.mkLid()
         self.mkRectanglePlane()
         # example loop
-        for block_num in range(self.hole*4):
+        for block_num in range(0, self.hole*4, 1):
             # make random plane shape for hole
             shape_name = self.mkRectanglePlane()
             # adds to list
