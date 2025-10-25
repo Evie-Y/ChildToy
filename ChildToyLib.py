@@ -48,14 +48,14 @@ class ChildToy():
             # for now, select rectangle for testing
         cmds.select(f"{shape_name[0]}.f[0:]", replace=True)
         shape_block = cmds.duplicate(shape_name, name='block1')
-        print(shape_name)
-        print(shape_block)
+        cmds.select(f"{shape_block[0]}.f[0:]", replace=True)
         # extrude
         cmds.polyExtrudeFacet(thickness=self.size/2)
         # rotate block 90 degrees
-        cmds.select({shape_name[0]})
+        cmds.select({shape_block[0]})
         cmds.rotate(90, 0, 0)
         # move block to random place from end of grid to toy
+        # TODO: implement random 12, self.size
         # freeze transformations
         cmds.makeIdentity(apply=True)
         pass
@@ -96,7 +96,6 @@ class ChildToy():
         # make lid w/ modified height
         lid =cmds.polyCube(depth=self.size, height=self.size/10, 
                                          width=self.size)
-        print(lid)
         # renames lid
         cmds.rename('ShapeSortingCubeLid')
         # move Y axis to origin
@@ -125,15 +124,16 @@ class ChildToy():
         blocks = []
         self.mkCube()
         self.mkLid()
-        self.mkRectanglePlane()
         # example loop
-        for block_num in range(0, self.hole*4, 1):
+        for idx in range(self.hole*4):
             # make random plane shape for hole
             shape_name = self.mkRectanglePlane()
             # adds to list
             shapes.append(shape_name)
             # make corresponding block for hole
-            self.convertsPlaneToBlock(shape_name)
+            shape_block = self.convertsPlaneToBlock(shape_name)
+            # adds to list
+            blocks.append(shape_block)
             # TODO make planes into holes on toy function
         # TODO: how to put planes into list to randomize
 
