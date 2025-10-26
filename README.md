@@ -28,7 +28,7 @@
     - ~Rectangle~
     - Star
     - Circle
-    - *eart
+    - Heart
     - Triangle
     - Trapazoid
     - Semi-Oval* *(extra)*
@@ -39,7 +39,7 @@
     - Rectangle
     - Star
     - Circle
-    - *eart
+    - Heart
     - Triangle
     - Trapazoid
     - Semi-Oval* *(extra)*
@@ -48,18 +48,18 @@
     - Diamond* *(extra)*
 
 - Rigging
-- Cube
+  - Cube
+    - Has a control
+    - Unique color
+  - Lid
   - Has a control
-  - Unique color
-- Lid
-- Has a control
-  - Pivot edited so control works
-  - Arrow control
-  - Unique color
-- Blocks
-  - Has a control
-  - Pivot edited
-    - when vertex aligned with hole, slots in
+    - Pivot edited so control works
+    - Arrow control
+    - Unique color
+  - Blocks
+    - Has a control
+    - Pivot edited
+      - when vertex aligned with hole, slots in
 
 - Features
     - Make Holes
