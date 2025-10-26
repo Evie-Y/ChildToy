@@ -31,10 +31,10 @@
     - Heart
     - Triangle
     - Trapazoid
-    - Semi-Oval* *(extra)*
-    - Pentagon* *(extra)*
-    - Clover* *(extra)*
-    - Diamond* *(extra)*
+    - Semi-Oval *(extra)*
+    - Pentagon *(extra)*
+    - Clover *(extra)*
+    - Diamond *(extra)*
   - Holes
     - Rectangle
     - Star
@@ -42,10 +42,10 @@
     - Heart
     - Triangle
     - Trapazoid
-    - Semi-Oval* *(extra)*
-    - Pentagon* *(extra)*
-    - Clover* *(extra)*
-    - Diamond* *(extra)*
+    - Semi-Oval *(extra)*
+    - Pentagon *(extra)*
+    - Clover *(extra)*
+    - Diamond *(extra)*
 
 - Rigging
   - Cube
