@@ -74,8 +74,8 @@ class ChildToy():
     def moveBlock(self, shape_block, shape_height):
         """ Move Block Around Grid """
         # variables
-        x_pos = self.getXChanceLocation()
-        z_pos = self.getZChanceLocation()
+        x_pos = self.getChanceLocation()
+        z_pos = self.getChanceLocation()
         # select block
         cmds.select(shape_block)
         # move block random xy
@@ -151,36 +151,24 @@ class ChildToy():
         # scale x,y,z
         cmds.scale(self.shape_size*self.shape_size, 0, (self.shape_size *
                                                         self.shape_size)/3)
-    
-    def getXChanceLocation(self):
+        
+    def getChanceLocation(self):
         """ Picks Random Location"""
         # pick random int
-        # from (floor end- shape thickness) to cube perimeter
-        shape_length = int(self.size/2)
-        if random.random() > .5:
-            random_x_space = random.randrange(self.size,
-                            (self.size * 3)-shape_length, shape_length)
-            return random_x_space
-        else:
-            random_x_space = random.randrange((-1*((self.size * 3)
-                            - shape_length)),(-1*self.size), shape_length)
-            return random_x_space
-        
-    def getZChanceLocation(self):
-        """ Picks Random Location"""
-        # pick random int
-        # from (floor end- shape thickness) to cube perimeter
-        #
-        shape_width = int(self.shape_size*self.shape_size)
-        if random.random() > .5:
-            random_z_space = random.randrange(self.size,
-                                            (self.size * 3)-shape_width, 3)
-            return random_z_space
-        else:
-            random_z_space = random.randrange((-1*((self.size * 3)-shape_width)),
-                                            (-1*self.size), 3)
-            return random_z_space
-        
+        # from floor, except area in self.size around origin
+        # variables
+        start = int(self.size*-3+((self.shape_size*self.shape_size)/2))
+        stop = int(self.size*3+((self.shape_size*self.shape_size)/2))
+        step = int(self.shape_size*self.shape_size)
+        exclude_area = int((self.size/2)+((self.shape_size*self.shape_size)/2))
+        excluded_area = range(-1*(exclude_area), exclude_area)
+        # creates list, excludes self.size area
+        valid_space = [num for num in range(start, stop, step)
+                            if num not in excluded_area]
+        # picks random num from list
+        random_space = random.choice(valid_space)
+        return random_space
+
     def mkGroup(self):
         ''' Makes Group '''
         # TODO: make group
