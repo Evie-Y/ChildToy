@@ -153,8 +153,9 @@ class ChildToy():
         # pick random int
         # from floor, except area in self.size around origin
         # variables
-        stop = int((self.size*3)-self.shape_area)
+        stop = int((self.size*3)-(self.shape_area*2))
         step = int(self.size/2)
+        # int((self.size/2)+shapeXscale)
         valid_space = random.randrange(0, stop, step)
         random_space = valid_space+self.shape_area
         return random_space
