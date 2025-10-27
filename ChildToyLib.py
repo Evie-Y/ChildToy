@@ -153,6 +153,7 @@ class ChildToy():
         # pick random int
         # from floor, except area in self.size around origin
         # variables
+        # TODO: edit step, stop, start
         stop = int((self.size*3)-(self.shape_area*2))
         step = int(self.size/2)
         # int((self.size/2)+shapeXscale)
@@ -174,8 +175,15 @@ class ChildToy():
             return random_space
 
     def mkGroup(self):
-        ''' Makes Group '''
-        # TODO: make group
+        ''' Makes Groups '''
+        # select all blocks
+        all_blocks = cmds.ls('block*', type='transform')
+        # make block grp
+        cmds.group(all_blocks, name="blocks_GRP")
+        # select all holes (change name later)
+        all_holes = cmds.ls('rect*', type='transform')
+        # make holes grp
+        cmds.group(all_holes, name="holes_GRP")
         
     def getRandomShape(self):
         ''' Picks Random Shape'''
@@ -290,6 +298,7 @@ class ChildToy():
             shape_block = self.convertsPlaneToBlock(shape_name)
             # adds to list
             blocks.append(shape_block)
+            print(shape_block)
             shape_height = self.getShapeHeight(shape_name)
             self.editShapePivotCenter(shape_block)
             self.moveBlock(shape_block, shape_height)
@@ -297,6 +306,7 @@ class ChildToy():
             # TODO make planes into holes on toy function
             # TOD0: dreeze shape transformations at end
         # TODO: how to put planes into list to randomize
+        self.mkGroup()
 
 
 
