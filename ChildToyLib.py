@@ -208,8 +208,20 @@ class ChildToy():
         # name for blocks group
         # name for non-shapes group
 
-    def editShapePivot(self):
-        ''' Edits Object Pivot'''
+    def editShapePivotCenter(self, shape_block):
+        ''' Edits Object Pivot for Translation'''
+        # select pivot
+        cmds.select(shape_block)
+        # centers pivot for translation
+        cmds.xform(centerPivots=True)
+
+        # TODO: implement feature
+        # TODO: decide how pivot works
+            # center pivot?
+            # pivot on bottom -> snap into hole
+
+    def editShapePivotRigSnap(self, shape_name):
+        ''' Edits Object Pivot for Rig'''
         # TODO: implement feature
         # TODO: decide how pivot works
             # center pivot?
@@ -241,7 +253,7 @@ class ChildToy():
         # different collor?
 
     def mkShapeRig(self):
-        ''' Makes SHape's Rig '''
+        ''' Makes Shape's Rig '''
         # TODO: implement
         # make control simple circle
 
@@ -249,6 +261,7 @@ class ChildToy():
         ''' Make Everything But Shapes'''
         self.mkCube()
         self.mkLid()
+        self.editLidPivot()
         self.mkFloor()
 
     # TODO: move planes to align w/ box
@@ -265,7 +278,6 @@ class ChildToy():
         blocks = []
         # makes non-shapes
         self.mkNonShapes()
-        self.editLidPivot()
         # example loop
         for idx in range(self.hole*4):
             # make random plane shape for hole
@@ -278,6 +290,7 @@ class ChildToy():
             # adds to list
             blocks.append(shape_block)
             shape_height = self.getShapeHeight(shape_name)
+            self.editShapePivotCenter(shape_block)
             self.moveBlock(shape_block, shape_height)
                 # center pivot b4 moveBlock
             # TODO make planes into holes on toy function
