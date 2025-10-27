@@ -32,6 +32,7 @@ class ChildToy():
         # move Y axis to origin
         cmds.move(0, self.size/2, 0)
         # delete wanted face
+        cmds.select('ShapeSortingCube.f[1]')
         cmds.delete('ShapeSortingCube.f[1]')
         # reselect cube
         cmds.select('ShapeSortingCube')
@@ -218,13 +219,13 @@ class ChildToy():
         ''' Edits Lid Pivot'''
         # variables
         z_pos = self.size/2
-        y_pos = self.size/5
+        y_pos = -1*(self.size/20)
         # select Lid
         cmds.select('ShapeSortingCubeLid')
         # move pivot
-        cmds.move(2, 2, 2, "ShapeSortingCubeLid.scalePivot",
-                  "ShapeSortingCubeLid.rotatePivot", absolute=True)
-        # TODO: implement
+        cmds.move(0, y_pos, z_pos, 'ShapeSortingCubeLid.scalePivot',
+                  'ShapeSortingCubeLid.rotatePivot', relative=True)
+        # TODO: implement pivot align when on side
         # put pivot on bottom-back-center,
         # so rig works correctly
             
@@ -256,6 +257,7 @@ class ChildToy():
 
             
     def build(self):
+        # TODO: edit code to allow multiple instances of build() to work
         # list
         # TODO: make shape randomizer w/ lists
         # TODO: group lists
@@ -263,6 +265,7 @@ class ChildToy():
         blocks = []
         # makes non-shapes
         self.mkNonShapes()
+        self.editLidPivot()
         # example loop
         for idx in range(self.hole*4):
             # make random plane shape for hole
