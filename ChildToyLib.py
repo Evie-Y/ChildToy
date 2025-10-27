@@ -154,11 +154,12 @@ class ChildToy():
         # from floor, except area in self.size around origin
         # variables
         # TODO: edit step, stop, start
-        stop = int((self.size*3)-(self.shape_area*2))
-        step = int(self.size/2)
+        # self.shape_area
+        stop = int((self.size*3))
+        # +1 since randrange only takes integer
+        step = int((self.size/2)+1)
         # int((self.size/2)+shapeXscale)
-        valid_space = random.randrange(0, stop, step)
-        random_space = valid_space+self.shape_area
+        random_space = random.randrange(0, stop, step)
         return random_space
     
     def applyChanceLocationToGrid(self):
@@ -180,10 +181,6 @@ class ChildToy():
         all_blocks = cmds.ls('block*', type='transform')
         # make block grp
         cmds.group(all_blocks, name="blocks_GRP")
-        # select all holes (change name later)
-        all_holes = cmds.ls('rect*', type='transform')
-        # make holes grp
-        cmds.group(all_holes, name="holes_GRP")
         
     def getRandomShape(self):
         ''' Picks Random Shape'''
