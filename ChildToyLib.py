@@ -216,6 +216,14 @@ class ChildToy():
 
     def editLidPivot(self):
         ''' Edits Lid Pivot'''
+        # variables
+        z_pos = self.size/2
+        y_pos = self.size/5
+        # select Lid
+        cmds.select('ShapeSortingCubeLid')
+        # move pivot
+        cmds.move(2, 2, 2, "ShapeSortingCubeLid.scalePivot",
+                  "ShapeSortingCubeLid.rotatePivot", absolute=True)
         # TODO: implement
         # put pivot on bottom-back-center,
         # so rig works correctly
@@ -254,7 +262,7 @@ class ChildToy():
         shapes = []
         blocks = []
         # makes non-shapes
-        #self.mkNonShapes()
+        self.mkNonShapes()
         # example loop
         for idx in range(self.hole*4):
             # make random plane shape for hole
