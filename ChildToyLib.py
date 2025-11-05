@@ -24,10 +24,8 @@ class ChildToy():
     def mkCube(self):
         """ Makes Cube """
         '''DONE'''
-        # creates cube based on selected size
         box = cmds.polyCube(depth=self.size, height=self.size, 
                                          width=self.size)
-        # renames cube to toy name
         cmds.rename('ShapeSortingCube')
         # move Y axis to origin
         cmds.move(0, self.size/2, 0)
@@ -46,11 +44,9 @@ class ChildToy():
         # make lid w/ modified height
         lid =cmds.polyCube(depth=self.size, height=self.size/10, 
                                          width=self.size)
-        # renames lid
         cmds.rename('ShapeSortingCubeLid')
         # move Y axis to origin
         cmds.move(0, self.size+(self.size/20), 0)
-        # edit pivot?
         # freeze transformations
         cmds.makeIdentity(apply=True)
         return lid
@@ -66,9 +62,7 @@ class ChildToy():
         cmds.select(f"{shape_name[0]}.f[0:]", replace=True)
         shape_block = cmds.duplicate(shape_name[0], name='block1')
         cmds.select(f"{shape_block[0]}.f[0:]", replace=True)
-        # extrude
         cmds.polyExtrudeFacet(thickness=self.size/2)
-        # rotate block 90 degrees
         cmds.select({shape_block[0]})
         cmds.rotate(90, 0, 0)
         return shape_block
@@ -76,15 +70,15 @@ class ChildToy():
     def moveBlock(self, shape_block, shape_height):
         """ Move Block Around Grid """
         # variables
-        x_pos = self.applyChanceLocationToGrid()
-        z_pos = self.applyChanceLocationToGrid()
-        # select block
+        x_pos = self.getXChanceLocation()
+        z_pos = self.getZChanceLocation(x_pos)
+        x_pos = self.applyChanceLocationToGrid(x_pos)
+        z_pos = self.applyChanceLocationToGrid(z_pos)
         cmds.select(shape_block)
         # move block random xy
-        # TODO: chance y per shape type
-        cmds.move(x_pos, shape_height/2, z_pos)
-        # freeze transformations
-        # cmds.makeIdentity(apply=True)
+        cmds.move(x_pos, shape_height/2, z_pos, rotatePivotRelative=True)
+        # freeze transforms
+        cmds.makeIdentity(apply=True)
         return shape_block
         
     def mkRectanglePlane(self):
@@ -119,7 +113,6 @@ class ChildToy():
         heart_plane = cmds.polyPlane(name='rectanglePlane1', 
                                    subdivisionsHeight=1, subdivisionsWidth=1)
         # scale x,y,z
-        # scale x,y,z
         cmds.scale(self.shape_area, 0, (self.shape_area)/3)
         
     def mkTriangleplane(self):
@@ -148,32 +141,36 @@ class ChildToy():
         # scale x,y,z
         cmds.scale(self.shape_area, 0, (self.shape_area)/3)
         
-    def getChanceLocation(self):
+    def getXChanceLocation(self):
         """ Picks Random Location"""
-        # pick random int
-        # from floor, except area in self.size around origin
-        # variables
-        # TODO: edit step, stop, start
-        # self.shape_area
-        stop = int((self.size*3))
+        stop = int((self.size*3)-1)
         # +1 since randrange only takes integer
         step = int((self.size/2)+1)
-        # int((self.size/2)+shapeXscale)
-        random_space = random.randrange(0, stop, step)
-        return random_space
+        random_x_space = random.randrange(0, stop, step)
+        return random_x_space
     
-    def applyChanceLocationToGrid(self):
-        # apply random_space to entire grid 
-        # variables
-        random_space = self.getChanceLocation()
+    def getZChanceLocation(self, x_pos):
+        """ Picks Random Location"""
+        stop = int((self.size*3)-1)
+        # +1 since randrange only takes integer
+        step = int((self.size/2)+1)
+        if x_pos < self.size:
+            start = int(self.size)
+            random_z_space = random.randrange(start, stop, step)
+            return random_z_space
+        else:
+            random_z_space = random.randrange(0, stop, step)
+            return random_z_space
+    
+    def applyChanceLocationToGrid(self, pos):
         chance = random.random()
         if chance <= .5:
             # neg grid
-            random_space = random_space*-1
-            return random_space
+            pos = pos*(-1)
+            return pos
         else:
             # positve grid
-            return random_space
+            return pos
 
     def mkGroup(self):
         ''' Makes Groups '''
