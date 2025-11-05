@@ -102,10 +102,11 @@ class ChildToy():
     def mkCirclePlane(self):
         """ Makes Circle Shapes """
         # edit name & subdivisions
-        circle_plane = cmds.polyPlane(name='rectanglePlane1', 
-                                   subdivisionsHeight=1, subdivisionsWidth=1)
-        # scale x,y,z
-        cmds.scale(self.shape_area, 0, (self.shape_area)/3)
+        circle_plane = cmds.polyPlane(name='CirclePlane1', 
+                        subdivisionsHeight=1, subdivisionsWidth=10,
+                        height=self.shape_size, width=self.shape_size)
+        cmds.polyCircularize(constructionHistory=True)
+        return circle_plane
         
     def mkHeartPlane(self):
         """ Makes Heart Shapes """
@@ -280,12 +281,12 @@ class ChildToy():
         shapes = []
         blocks = []
         # makes non-shapes
-        self.mkNonShapes()
+        # self.mkNonShapes()
         # example loop
         for idx in range(self.hole*4):
             # make random plane shape for hole
             # TODO: implement random
-            shape_name = self.mkRectanglePlane()
+            shape_name = self.mkCirclePlane()
             # adds to list
             shapes.append(shape_name)
             # make corresponding block for hole
@@ -298,7 +299,6 @@ class ChildToy():
             self.moveBlock(shape_block, shape_height)
                 # center pivot b4 moveBlock
             # TODO make planes into holes on toy function
-            # TOD0: dreeze shape transformations at end
         # TODO: how to put planes into list to randomize
         self.mkGroup()
 
