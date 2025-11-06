@@ -102,7 +102,7 @@ class ChildToy():
     def mkCirclePlane(self):
         """ Makes Circle Shapes """
         # edit name & subdivisions
-        circle_plane = cmds.polyPlane(name='CirclePlane1', 
+        circle_plane = cmds.polyPlane(name='circlePlane1', 
                         subdivisionsHeight=1, subdivisionsWidth=10,
                         height=self.shape_size, width=self.shape_size)
         cmds.polyCircularize(constructionHistory=True)
@@ -126,15 +126,15 @@ class ChildToy():
         # scale x,y,z
         return triangle_plane
         
-    def mkSemiOvalplane(self):
-        """ Makes Semi-Oval Shapes """
-        # semi-oval so it doesn't fit in circle hole
-        # might delete b/c repetitive
+    def mkPentagonplane(self):
+        """ Makes Pentagon Shapes """
         # edit name & subdivisions
-        semi_oval_plane = cmds.polyPlane(name='rectanglePlane1', 
-                                   subdivisionsHeight=1, subdivisionsWidth=1)
+        pentagon_plane = cmds.polyDisc(sides=5, subdivisions=0, 
+                        radius=self.hole/self.size)
+        cmds.setAttr(f'{pentagon_plane[1]}.heightBaseline', .1)
+        cmds.rename('pentagonPlane1')
         # scale x,y,z
-        cmds.scale(self.shape_area, 0, (self.shape_area)/3)
+        return pentagon_plane
         
     def mkTrapazoidPlane(self):
         """ Makes Trapazoid Shapes """
@@ -290,8 +290,7 @@ class ChildToy():
             # make random plane shape for hole
             # TODO: implement random
             shape_name = self.mkRectanglePlane()
-            self.mkCirclePlane()
-            self.mkTriangleplane()
+            self.mkPentagonplane()
             # adds to list
             shapes.append(shape_name)
             # make corresponding block for hole
