@@ -1,15 +1,6 @@
-from PySide2 import QtWidgets, QtCore
-from PySide2.QtCore import Qt
-import maya.OpenMayaUI as omui
-from shiboken2 import wrapInstance
-
 import maya.cmds as cmds
-
+from maya import cmds
 import random
-
-def get_maya_main_win():
-    main_win = omui.MQtUtil.mainWindow()
-    return wrapInstance(int(main_win), QtWidgets.QWidget
 
 class ChildToy():
     def __init__(self):
@@ -94,7 +85,6 @@ class ChildToy():
     
     def mkSquarePlane(self):
         """ Makes Rectangle Shapes """
-        '''DONE'''
         square_plane = cmds.polyPlane(name='squarePlane1', 
                         subdivisionsHeight=1, subdivisionsWidth=1,
                         width=self.shape_size, height=self.shape_size)
@@ -105,20 +95,45 @@ class ChildToy():
         '''DONE'''
         rectangle_plane = cmds.polyPlane(name='rectanglePlane1', 
                                    subdivisionsHeight=1, subdivisionsWidth=1)
-        cmds.scale(self.shape_area, 0, (self.shape_area)/2)
+        cmds.scale(self.shape_area, 0, (self.shape_area)/3)
         return rectangle_plane
+    
+    def mkCloverPlane(self):
+        clover_plane = cmds.polyDisc(subdivisions=1, sides=10)
+        cmds.rotate(0, -18, 0, relative=True)
+        cmds.select(f"{clover_plane[0]}.vtx[1]", add=True, replace=True)
+        cmds.select(f"{clover_plane[0]}.vtx[3]", add=True)
+        cmds.select(f"{clover_plane[0]}.vtx[5]", add=True)
+        cmds.select(f"{clover_plane[0]}.vtx[7]", add=True)
+        cmds.select(f"{clover_plane[0]}.vtx[9]", add=True)
+        cmds.scale(.55, .55, .55, relative=True)
+        cmds.select(clover_plane[0], replace=True)
+        cmds.rename('cloverPlane1')
+        cmds.scale(self.hole/self.size, self.hole/self.size, 
+                   self.hole/self.size, relative=True)
+        return
     
     def mkStarPlane(self):
         """ Makes Star Shapes """
-        star_plane = cmds.polyPlane(name='rectanglePlane1', 
-                                   subdivisionsHeight=1, subdivisionsWidth=1)
-        cmds.scale(self.shape_area, 0, (self.shape_area)/3)
+        star_plane = cmds.polyDisc(subdivisions=0, sides=10)
+        cmds.rotate(0, -18, 0, relative=True)
+        cmds.select(f"{star_plane[0]}.vtx[1]", add=True, replace=True)
+        cmds.select(f"{star_plane[0]}.vtx[3]", add=True)
+        cmds.select(f"{star_plane[0]}.vtx[5]", add=True)
+        cmds.select(f"{star_plane[0]}.vtx[7]", add=True)
+        cmds.select(f"{star_plane[0]}.vtx[9]", add=True)
+        cmds.scale(.55, .55, .55, relative=True)
+        cmds.select(star_plane[0], replace=True)
+        cmds.rename('starPlane1')
+        scale = (self.hole/self.size)+(self.size/(100))
+        cmds.scale(scale, scale, scale, relative=True)
+        return star_plane
         
     def mkCirclePlane(self):
         """ Makes Circle Shapes """
         '''DONE'''
         circle_plane = cmds.polyPlane(name='circlePlane1', 
-                        subdivisionsHeight=1, subdivisionsWidth=10,
+                        subdivisionsHeight=1, subdivisionsWidth=2,
                         height=self.shape_size, width=self.shape_size)
         cmds.polyCircularize(constructionHistory=True)
         return circle_plane
@@ -191,7 +206,6 @@ class ChildToy():
 
     def mkGroup(self):
         ''' Makes Groups '''
-        '''DONE'''
         # select all blocks
         all_blocks = cmds.ls('block*', type='transform')
         # make block grp
@@ -301,23 +315,24 @@ class ChildToy():
         shapes = []
         blocks = []
         # makes non-shapes
-        self.mkNonShapes()
+        # self.mkNonShapes()
+        self.mkStarPlane()
+        self.mkCloverPlane()
+        self.mkCirclePlane()
+        self.mkPentagonplane()
+        self.mkTriangleplane()
+        self.mkTrapazoidPlane()
         # example loop
         for idx in range(self.hole*4):
             # make random plane shape for hole
             # TODO: implement random
             shape_name = self.mkRectanglePlane()
-            self.mkSquarePlane()
-            self.mkCirclePlane()
-            self.mkPentagonplane()
-            self.mkTriangleplane()
             # adds to list
             shapes.append(shape_name)
             # make corresponding block for hole
             shape_block = self.convertsPlaneToBlock(shape_name)
             # adds to list
             blocks.append(shape_block)
-            print(shape_block)
             shape_height = self.getShapeHeight(shape_name)
             self.editShapePivotCenter(shape_block)
             self.moveBlock(shape_block, shape_height)
