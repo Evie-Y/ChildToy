@@ -53,6 +53,7 @@ class ChildToy():
 
     def convertsPlaneToBlock(self, shape_name):
         """ Make Plane Into Block"""
+        '''DONE'''
             # pentagon?
             # clover?
             # diamond?
@@ -69,6 +70,7 @@ class ChildToy():
 
     def moveBlock(self, shape_block, shape_height):
         """ Move Block Around Grid """
+        '''DONE'''
         # variables
         x_pos = self.getXChanceLocation()
         z_pos = self.getZChanceLocation(x_pos)
@@ -80,28 +82,32 @@ class ChildToy():
         # freeze transforms
         cmds.makeIdentity(apply=True)
         return shape_block
-        
+    
+    def mkSquarePlane(self):
+        """ Makes Rectangle Shapes """
+        '''DONE'''
+        square_plane = cmds.polyPlane(name='squarePlane1', 
+                        subdivisionsHeight=1, subdivisionsWidth=1,
+                        width=self.shape_size, height=self.shape_size)
+        return square_plane
+    
     def mkRectanglePlane(self):
         """ Makes Rectangle Shapes """
         '''DONE'''
-        # edit name & subdivisions
         rectangle_plane = cmds.polyPlane(name='rectanglePlane1', 
                                    subdivisionsHeight=1, subdivisionsWidth=1)
-        # scale x,y,z
-        cmds.scale(self.shape_area, 0, (self.shape_area)/3)
+        cmds.scale(self.shape_area, 0, (self.shape_area)/2)
         return rectangle_plane
     
     def mkStarPlane(self):
         """ Makes Star Shapes """
-        # edit name & subdivisions
         star_plane = cmds.polyPlane(name='rectanglePlane1', 
                                    subdivisionsHeight=1, subdivisionsWidth=1)
-        # scale x,y,z
         cmds.scale(self.shape_area, 0, (self.shape_area)/3)
         
     def mkCirclePlane(self):
         """ Makes Circle Shapes """
-        # edit name & subdivisions
+        '''DONE'''
         circle_plane = cmds.polyPlane(name='circlePlane1', 
                         subdivisionsHeight=1, subdivisionsWidth=10,
                         height=self.shape_size, width=self.shape_size)
@@ -110,7 +116,6 @@ class ChildToy():
         
     def mkHeartPlane(self):
         """ Makes Heart Shapes """
-        # edit name & subdivisions
         heart_plane = cmds.polyPlane(name='rectanglePlane1', 
                                    subdivisionsHeight=1, subdivisionsWidth=1)
         # scale x,y,z
@@ -118,35 +123,32 @@ class ChildToy():
         
     def mkTriangleplane(self):
         """ Makes Triangle Shapes """
-        # edit name & subdivisions
+        '''DONE'''
         triangle_plane = cmds.polyDisc(subdivisions=0,
                         radius=self.hole/self.size)
         cmds.setAttr(f'{triangle_plane[1]}.heightBaseline', .25)
         cmds.rename('trianglePlane1')
-        # scale x,y,z
         return triangle_plane
         
     def mkPentagonplane(self):
         """ Makes Pentagon Shapes """
-        # edit name & subdivisions
+        '''DONE'''
         pentagon_plane = cmds.polyDisc(sides=5, subdivisions=0, 
                         radius=self.hole/self.size)
         cmds.setAttr(f'{pentagon_plane[1]}.heightBaseline', .1)
         cmds.rename('pentagonPlane1')
-        # scale x,y,z
         return pentagon_plane
         
     def mkTrapazoidPlane(self):
         """ Makes Trapazoid Shapes """
-        # edit name & subdivisions
         trapazoid_plane = cmds.polyPlane(name='rectanglePlane1', 
                                    subdivisionsHeight=1, subdivisionsWidth=1)
         cmds.rename('rectanglePlane1')
-        # scale x,y,z
         cmds.scale(self.shape_area, 0, (self.shape_area)/3)
         
     def getXChanceLocation(self):
         """ Picks Random Location"""
+        '''DONE'''
         stop = int((self.size*3)-1)
         # +1 since randrange only takes integer
         step = int((self.size/2)+1)
@@ -155,6 +157,7 @@ class ChildToy():
     
     def getZChanceLocation(self, x_pos):
         """ Picks Random Location"""
+        '''DONE'''
         stop = int((self.size*3)-1)
         # +1 since randrange only takes integer
         step = int((self.size/2)+1)
@@ -167,6 +170,7 @@ class ChildToy():
             return random_z_space
     
     def applyChanceLocationToGrid(self, pos):
+        '''DONE'''
         chance = random.random()
         if chance <= .5:
             # neg grid
@@ -178,6 +182,7 @@ class ChildToy():
 
     def mkGroup(self):
         ''' Makes Groups '''
+        '''DONE'''
         # select all blocks
         all_blocks = cmds.ls('block*', type='transform')
         # make block grp
@@ -189,6 +194,7 @@ class ChildToy():
 
     def getShapeHeight(self, shape):
         ''' Get Shape Height'''
+        '''DONE'''
         shape_height = cmds.getAttr(f"{shape[0]}.scaleZ")
         return shape_height
     
@@ -236,6 +242,7 @@ class ChildToy():
 
     def editLidPivot(self):
         ''' Edits Lid Pivot'''
+        '''DONE'''
         # variables
         z_pos = self.size/2
         y_pos = -1*(self.size/20)
@@ -266,6 +273,7 @@ class ChildToy():
 
     def mkNonShapes(self):
         ''' Make Everything But Shapes'''
+        '''DONE'''
         self.mkCube()
         self.mkLid()
         self.editLidPivot()
@@ -284,13 +292,16 @@ class ChildToy():
         shapes = []
         blocks = []
         # makes non-shapes
-        # self.mkNonShapes()
+        self.mkNonShapes()
         # example loop
         for idx in range(self.hole*4):
             # make random plane shape for hole
             # TODO: implement random
             shape_name = self.mkRectanglePlane()
+            self.mkSquarePlane()
+            self.mkCirclePlane()
             self.mkPentagonplane()
+            self.mkTriangleplane()
             # adds to list
             shapes.append(shape_name)
             # make corresponding block for hole
