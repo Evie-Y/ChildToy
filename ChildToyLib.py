@@ -1,6 +1,15 @@
+from PySide2 import QtWidgets, QtCore
+from PySide2.QtCore import Qt
+import maya.OpenMayaUI as omui
+from shiboken2 import wrapInstance
+
 import maya.cmds as cmds
-from maya import cmds
+
 import random
+
+def get_maya_main_win():
+    main_win = omui.MQtUtil.mainWindow()
+    return wrapInstance(int(main_win), QtWidgets.QWidget
 
 class ChildToy():
     def __init__(self):
