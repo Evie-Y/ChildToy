@@ -85,6 +85,7 @@ class ChildToy():
     
     def mkSquarePlane(self):
         """ Makes Rectangle Shapes """
+        ''' DONE '''
         square_plane = cmds.polyPlane(name='squarePlane1', 
                         subdivisionsHeight=1, subdivisionsWidth=1,
                         width=self.shape_size, height=self.shape_size)
@@ -99,6 +100,8 @@ class ChildToy():
         return rectangle_plane
     
     def mkCloverPlane(self):
+        """ Makes Clover Shapes """
+        '''DONE'''
         clover_plane = cmds.polyDisc(subdivisions=1, sides=10)
         cmds.rotate(0, -18, 0, relative=True)
         cmds.select(f"{clover_plane[0]}.vtx[1]", add=True, replace=True)
@@ -115,6 +118,7 @@ class ChildToy():
     
     def mkStarPlane(self):
         """ Makes Star Shapes """
+        '''DONE'''
         star_plane = cmds.polyDisc(subdivisions=0, sides=10)
         cmds.rotate(0, -18, 0, relative=True)
         cmds.select(f"{star_plane[0]}.vtx[1]", add=True, replace=True)
@@ -133,7 +137,7 @@ class ChildToy():
         """ Makes Circle Shapes """
         '''DONE'''
         circle_plane = cmds.polyPlane(name='circlePlane1', 
-                        subdivisionsHeight=1, subdivisionsWidth=2,
+                        subdivisionsHeight=6, subdivisionsWidth=6,
                         height=self.shape_size, width=self.shape_size)
         cmds.polyCircularize(constructionHistory=True)
         return circle_plane
@@ -165,10 +169,13 @@ class ChildToy():
         
     def mkTrapazoidPlane(self):
         """ Makes Trapazoid Shapes """
-        trapazoid_plane = cmds.polyPlane(name='rectanglePlane1', 
+        ''' DONE '''
+        trapazoid_plane = cmds.polyPlane(name='trapazoidPlane1', 
                                    subdivisionsHeight=1, subdivisionsWidth=1)
-        cmds.rename('rectanglePlane1')
-        cmds.scale(self.shape_area, 0, (self.shape_area)/3)
+        cmds.scale(self.shape_area, 0, (self.shape_area)/2)
+        cmds.select(f"{trapazoid_plane[0]}.e[3]", replace=True)
+        cmds.scale(.8, 1, 1, relative=True)
+        return trapazoid_plane
         
     def getXChanceLocation(self):
         """ Picks Random Location"""
@@ -321,6 +328,7 @@ class ChildToy():
         self.mkCirclePlane()
         self.mkPentagonplane()
         self.mkTriangleplane()
+        self.mkSquarePlane()
         self.mkTrapazoidPlane()
         # example loop
         for idx in range(self.hole*4):
