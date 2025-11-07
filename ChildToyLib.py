@@ -144,10 +144,19 @@ class ChildToy():
         
     def mkHeartPlane(self):
         """ Makes Heart Shapes """
-        heart_plane = cmds.polyPlane(name='rectanglePlane1', 
-                                   subdivisionsHeight=1, subdivisionsWidth=1)
-        # scale x,y,z
-        cmds.scale(self.shape_area, 0, (self.shape_area)/3)
+        ''' DONE '''
+        heart_plane = cmds.polyPlane(name='heartPlane1', 
+                                   subdivisionsHeight=2, subdivisionsWidth=2)
+        cmds.select(f'{heart_plane[0]}.vtx[7]', replace=True)
+        cmds.scale(1, 1, .4, relative=True)
+        cmds.scale(self.shape_area, 0, (self.hole/self.size)+(self.size/(100)))
+        cmds.select(f'{heart_plane[0]}.vtx[0]', replace=True)
+        cmds.select(f'{heart_plane[0]}.vtx[2]', add=True)
+        cmds.scale(.6, 1, .4, relative=True)
+        cmds.select(heart_plane[0], replace=True)
+        cmds.scale(self.shape_size, self.shape_size, (self.shape_size) +
+                   (self.size/(100)))
+        return heart_plane
         
     def mkTriangleplane(self):
         """ Makes Triangle Shapes """
@@ -323,6 +332,7 @@ class ChildToy():
         blocks = []
         # makes non-shapes
         # self.mkNonShapes()
+        self.mkHeartPlane()
         self.mkStarPlane()
         self.mkCloverPlane()
         self.mkCirclePlane()
