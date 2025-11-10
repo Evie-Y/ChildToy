@@ -50,16 +50,70 @@ class ChildToy():
         # freeze transformations
         cmds.makeIdentity(apply=True)
         return lid
+    
+    def movePlanesToOneSide(self, shape_name, idx):
+        ''' Makes Holes '''
+        # how to determine where to place plane based on # of holes
+        x_pos = self.getHoleNumX(idx)
+        y_pos = self.getHoleNumY(idx)
+        cmds.move(x_pos, y_pos, self.size/2, shape_name[0])
+        cmds.rotate(90, 0, 0, shape_name[0], relative=True)
+        return shape_name
+
+    def getholeXpos(self, idx):
+        # determines x_pos based on odd/even
+        hole_num = self.isOdd(idx)
+        if hole_num == True:
+            x_pos = self.size/4
+        else:
+            x_pos = (self.size/4)*-1
+        return x_pos
+
+    def getHoleNumX(self, idx):
+        # hole in center if only one
+        if self.hole == 1:
+            x_pos = 0
+        else:
+            x_pos = self.getholeXpos(idx)
+        return x_pos        
+    
+    def getHoleNumY(self, idx):
+        if self.hole == 1:
+            y_pos = self.size/2
+        else:
+            y_pos = self.getHoleYPos(idx)
+        return y_pos
+    
+    def getHoleYPos(self, idx):
+        y_pos = self.size/4
+        for i in range(1, (self.hole*4)+1, self.hole):
+            if i == idx:
+                y_pos = (self.size/2)+(self.size/4)
+        for i in range(2, (self.hole*4)+1, self.hole):
+            if i == idx:
+                y_pos = (self.size/2)+(self.size/4)
+        return y_pos
+        
+    def rotatePlanestoWholeBox(self, shape_name, idx):
+        if idx > self.hole:
+            cmds.move(0, 0, 0, f'{shape_name[0]}.scalePivot')
+            cmds.move(0, 0, 0, f'{shape_name[0]}.rotatePivot')
+            cmds.select(shape_name[0])
+            cmds.makeIdentity(apply=True)
+            if idx <= self.hole*2:
+                print(f'{idx} 2')
+                cmds.rotate(90, rotateY=True, relative=True)
+            elif idx <= self.hole*3:
+                print(f'{idx} 3')
+                cmds.rotate(180, rotateY=True, relative=True)
+            else:
+                print(f'{idx} 4')
+                cmds.rotate(270, rotateY=True, relative=True)
+        return shape_name
 
     def convertsPlaneToBlock(self, shape_name):
         """ Make Plane Into Block"""
         '''DONE'''
-            # pentagon?
-            # clover?
-            # diamond?
-        # TODO: implement select random plane
-            # for now, select rectangle for testing
-        # select corresponding plane shape
         cmds.select(f"{shape_name[0]}.f[0:]", replace=True)
         shape_block = cmds.duplicate(shape_name[0], name='block1')
         cmds.select(f"{shape_block[0]}.f[0:]", replace=True)
@@ -72,6 +126,7 @@ class ChildToy():
         """ Move Block Around Grid """
         '''DONE'''
         # variables
+        # TODO: fix repeat locations
         x_pos = self.getXChanceLocation()
         z_pos = self.getZChanceLocation(x_pos)
         x_pos = self.applyChanceLocationToGrid(x_pos)
@@ -114,7 +169,7 @@ class ChildToy():
         cmds.rename('cloverPlane1')
         cmds.scale(self.hole/self.size, self.hole/self.size, 
                    self.hole/self.size, relative=True)
-        return
+        return clover_plane
     
     def mkStarPlane(self):
         """ Makes Star Shapes """
@@ -262,15 +317,10 @@ class ChildToy():
 
     def editShapePivotCenter(self, shape_block):
         ''' Edits Object Pivot for Translation'''
-        # select pivot
-        cmds.select(shape_block)
-        # centers pivot for translation
-        cmds.xform(centerPivots=True)
+        cmds.select(f'{shape_block[0]}.scalePivot', replace=True)
+        cmds.select(f'{shape_block[0]}.rotatePivot', add=True)
+        cmds.move(0, 0, self.size/4)
 
-        # TODO: implement feature
-        # TODO: decide how pivot works
-            # center pivot?
-            # pivot on bottom -> snap into hole
 
     def editShapePivotRigSnap(self, shape_name):
         ''' Edits Object Pivot for Rig'''
@@ -324,37 +374,17 @@ class ChildToy():
 
             
     def build(self):
-        # TODO: edit code to allow multiple instances of build() to work
-        # list
-        # TODO: make shape randomizer w/ lists
-        # TODO: group lists
-        shapes = []
-        blocks = []
-        # makes non-shapes
-        # self.mkNonShapes()
-        self.mkHeartPlane()
-        self.mkStarPlane()
-        self.mkCloverPlane()
-        self.mkCirclePlane()
-        self.mkPentagonplane()
-        self.mkTriangleplane()
-        self.mkSquarePlane()
-        self.mkTrapazoidPlane()
-        # example loop
-        for idx in range(self.hole*4):
+        self.mkNonShapes()
+        for idx in range(1, (self.hole*4)+1):
             # make random plane shape for hole
             # TODO: implement random
             shape_name = self.mkRectanglePlane()
-            # adds to list
-            shapes.append(shape_name)
-            # make corresponding block for hole
             shape_block = self.convertsPlaneToBlock(shape_name)
-            # adds to list
-            blocks.append(shape_block)
             shape_height = self.getShapeHeight(shape_name)
             self.editShapePivotCenter(shape_block)
             self.moveBlock(shape_block, shape_height)
-                # center pivot b4 moveBlock
+            self.movePlanesToOneSide(shape_name, idx)
+            self.rotatePlanestoWholeBox(shape_name, idx)
             # TODO make planes into holes on toy function
         # TODO: how to put planes into list to randomize
         self.mkGroup()
