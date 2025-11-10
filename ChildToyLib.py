@@ -10,6 +10,12 @@ class ChildToy():
         self.hole = 4
         self.shape_size = self.size/self.hole
         self.shape_area = self.shape_size*self.shape_size
+        # TODO:
+        # make holes
+        # make con
+        # make UI
+        # figure out color
+        # fix random generation
 
     def mkFloor(self):
         """ Makes Floor"""
@@ -52,7 +58,7 @@ class ChildToy():
         return lid
     
     def movePlanesToOneSide(self, shape_name, idx):
-        ''' Makes Holes '''
+        ''' Move Planes '''
         # how to determine where to place plane based on # of holes
         x_pos = self.getHoleNumX(idx)
         y_pos = self.getHoleNumY(idx)
@@ -101,13 +107,10 @@ class ChildToy():
             cmds.select(shape_name[0])
             cmds.makeIdentity(apply=True)
             if idx <= self.hole*2:
-                print(f'{idx} 2')
                 cmds.rotate(90, rotateY=True, relative=True)
             elif idx <= self.hole*3:
-                print(f'{idx} 3')
                 cmds.rotate(180, rotateY=True, relative=True)
             else:
-                print(f'{idx} 4')
                 cmds.rotate(270, rotateY=True, relative=True)
         return shape_name
 
@@ -121,7 +124,23 @@ class ChildToy():
         cmds.select({shape_block[0]})
         cmds.rotate(90, 0, 0)
         return shape_block
+    
+    def mergePlanesToBox(self):
+        all_objects = cmds.ls(dag=True, long=False, type='transform')
+        objects = []
+        for obj in all_objects:
+            if 'plane' in obj.lower():
+                objects.append(obj)
+        for obj in objects:
+            box = cmds.polyUnite(obj, 'ShapeSortingCube', name='box')
+            cmds.delete(box, ch=True)
+        cmds.select(box[0], replace=True)
+        cmds.rename('ShapeSortingCube')
 
+    def mkHoles(self):
+        # faces = 4 + self.hole*4
+        pass
+    
     def moveBlock(self, shape_block, shape_height):
         """ Move Block Around Grid """
         '''DONE'''
@@ -385,6 +404,7 @@ class ChildToy():
             self.moveBlock(shape_block, shape_height)
             self.movePlanesToOneSide(shape_name, idx)
             self.rotatePlanestoWholeBox(shape_name, idx)
+            self.mergePlanesToBox()
             # TODO make planes into holes on toy function
         # TODO: how to put planes into list to randomize
         self.mkGroup()
