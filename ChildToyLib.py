@@ -1,21 +1,157 @@
+from PySide2 import QtWidgets, QtCore
+from PySide2.QtCore import Qt
+import maya.OpenMayaUI as omui
+from shiboken2 import wrapInstance
+
 import maya.cmds as cmds
-from maya import cmds
-import random
+
+def get_maya_main_win():
+    main_win = omui.MQtUtil.mainWindow()
+    return wrapInstance(int(main_win), QtWidgets.QWidget)
+
+class StairGenWin(QtWidgets.QDialog):
+    '''Child Toy Window Class'''
+
+    def __init__(self):
+        # runs the init code of the parent QDialog class
+        super().__init__(parent=get_maya_main_win())
+        self.stairGen = ChildToy()
+        self.setWindowTitle("Child Toy Generator")
+        self.resize(250, 250)
+        self._mk_main_layout()
+        self._connect_signals()
+
+    def _connect_signals(self):
+        self.cancel_btn.clicked.connect(self.cancel)
+        self.build_btn.clicked.connect(self.build)
+        self.enable_grp_name_cb.stateChanged.connect(self.toggle_grpname)
+
+    @QtCore.Slot()
+    def toggle_grpname(self):
+        is_custom_grpname_enabled = self.enable_grp_name_cb.isChecked()
+        self.grp_name_ledit.setDisabled(not is_custom_grpname_enabled)
+        
+
+    def cancel(self):
+        self.close()
+
+    @QtCore.Slot()
+    def build(self):
+        self._update_stairgen_properties()
+        self.stairGen.build()
+
+    def _update_stairgen_properties(self):
+        self.stairGen.__init__() # reset properties to default
+        self.stairGen.step_count = self.steps_spnbx.value()
+        # total_rise
+        self.stairGen.total_rise = self.total_rise_dsnbx.value()
+        # run
+        self.stairGen.run = self.run_spnbx.value()
+        # width
+        self.stairGen.width = self.width_dsnbx.value()
+        self.stairGen.grp_name = self.grp_name_ledit.text()
+
+    def _mk_main_layout(self):
+        # Create vertical box layout
+        self.main_layout = QtWidgets.QVBoxLayout()
+        self._add_name_label()
+        # label | text field
+        self._add_form_layout()
+        self._mk_btn_layout()
+        # Set Dialog window to use main layout
+        self.setLayout(self.main_layout)
+
+    def _add_form_layout(self):
+        self.form_layout = QtWidgets.QFormLayout()
+        self._add_steps()
+        self._add_rise()
+        self._add_run()
+        self._add_width()
+        self._enable_grp_name()
+        # | 'Enter Your Name' |
+        self._add_grp_name()
+        self.main_layout.addLayout(self.form_layout)
+
+    def _enable_grp_name(self):
+        self.enable_grp_name_cb = QtWidgets.QCheckBox('Enable Group Naming')
+        self.form_layout.addRow(self.enable_grp_name_cb)
+
+    def _add_grp_name(self):
+        self.grp_name_ledit = QtWidgets.QLineEdit('Stair')
+        self.grp_name_ledit.setDisabled(True)
+        self.form_layout.addRow('Group Name:', self.grp_name_ledit)
+
+    def _add_width(self):
+        self.width_dsnbx = QtWidgets.QDoubleSpinBox()
+        self.width_dsnbx.setValue(10)
+        self.width_dsnbx.setSingleStep(0.5)
+        self.form_layout.addRow('Width:', self.width_dsnbx)
+
+    def _add_run(self):
+        self.run_spnbx = QtWidgets.QSpinBox()
+        self.run_spnbx.setValue(60)
+        self.form_layout.addRow('Run:', self.run_spnbx)
+
+
+    def _add_rise(self):
+        self.total_rise_dsnbx = QtWidgets.QDoubleSpinBox()
+        self.total_rise_dsnbx.setValue(15)
+        self.total_rise_dsnbx.setSingleStep(0.5)
+        self.form_layout.addRow('Total Rise:', self.total_rise_dsnbx)
+
+
+    def _add_steps(self):
+        self.steps_spnbx = QtWidgets.QSpinBox()
+        self.steps_spnbx.setValue(5)
+        self.form_layout.addRow('Steps:', self.steps_spnbx)
+
+    def _add_name_label(self):
+        self.name_lbl = QtWidgets.QLabel('Stair Generator')
+        self.name_lbl.setStyleSheet('background-color: white;'
+                                    'color: red;'
+                                    'font: bold 24px')
+        self.name_lbl.setAlignment(Qt.AlignCenter)
+        self.main_layout.addWidget(self.name_lbl)
+
+    def _mk_btn_layout(self):
+        self.btn_layout = QtWidgets.QHBoxLayout()
+        # Create 'build' button
+        self.build_btn = QtWidgets.QPushButton('Build')
+        # Create a 'cancel' button
+        self.cancel_btn = QtWidgets.QPushButton('Cancel')
+        # Add the build button to first row
+        self.btn_layout.addWidget(self.build_btn)
+        # Add the cancel button to secound row
+        self.btn_layout.addWidget(self.cancel_btn)
+        self.main_layout.addLayout(self.btn_layout)
 
 class ChildToy():
     def __init__(self):
-        # add more variables for shapes?
         # remeber to delete '''DONE''' when finished
-        self.size = 5
-        self.hole = 4
-        self.shape_size = self.size/self.hole
-        self.shape_area = self.shape_size*self.shape_size
+        self.size = 3
+        self.hole = 3
+        self.shape_size = (self.size/self.hole)
+        if self.shape_size >= self.size:
+            self.shape_size = (self.size/self.hole)-(self.size*.25)
+        self.shape_area = self.shape_size*1.1
         # TODO:
-        # make holes
-        # make con
-        # make UI
-        # figure out color
-        # fix random generation
+        # make UI (5 buttons)
+        # figure out color (diff funct for box, lid, blocks, no floor)
+        # make list of shapes to randomize
+        # get rid of rig, make blcoks dif colors
+
+        # self.size
+        # self.hole
+        # pick hole/block shape
+        # pick block color(s)
+        # pick block/lid/plane color
+
+    def assignBoxColor(self):
+        ''' Give Box and Lid Colors '''
+    
+
+    def assignBlocksColors(self):
+        ''' Give Blocks Colors'''
 
     def mkFloor(self):
         """ Makes Floor"""
@@ -77,7 +213,7 @@ class ChildToy():
 
     def getHoleNumX(self, idx):
         # hole in center if only one
-        if self.hole == 1:
+        if self.hole <= 2:
             x_pos = 0
         else:
             x_pos = self.getholeXpos(idx)
@@ -86,8 +222,18 @@ class ChildToy():
     def getHoleNumY(self, idx):
         if self.hole == 1:
             y_pos = self.size/2
+        if self.hole == 2:
+            y_pos = self.getHoleYPosForTwo(idx)
         else:
             y_pos = self.getHoleYPos(idx)
+        return y_pos
+    
+    def getHoleYPosForTwo(self, idx):
+        odd = self.isOdd(idx)
+        if odd == True:
+            y_pos = self.size/4
+        else:
+            y_pos = (self.size/2)+(self.size/4)
         return y_pos
     
     def getHoleYPos(self, idx):
@@ -136,10 +282,6 @@ class ChildToy():
             cmds.delete(box, ch=True)
         cmds.select(box[0], replace=True)
         cmds.rename('ShapeSortingCube')
-
-    def mkHoles(self):
-        # faces = 4 + self.hole*4
-        pass
     
     def moveBlock(self, shape_block, shape_height):
         """ Move Block Around Grid """
