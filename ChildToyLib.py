@@ -37,9 +37,7 @@ class ToyGenWin(QtWidgets.QDialog):
     def _update_toyGen_properties(self):
         self.toyGen.__init__()  # reset properties to default
         self.toyGen.hole = self.hole_spnbx.value()
-        print(self.toyGen.holes)
         self.toyGen.size = self.size_spnbx.value()
-        print(self.toyGen.box)
 
     def _mk_main_layout(self):
         # Create vertical box layout
@@ -86,25 +84,17 @@ class ToyGenWin(QtWidgets.QDialog):
         self.enable_rect_cb = QtWidgets.QCheckBox('Rectangle')
         self.enable_sqr_cb = QtWidgets.QCheckBox('Square')
         self.enable_crcl_cb = QtWidgets.QCheckBox('Circle')
-        self.enable_tri_cb = QtWidgets.QCheckBox('Triangle')
         self.sshp_layout.addWidget(self.enable_rect_cb)
         self.sshp_layout.addWidget(self.enable_sqr_cb)
         self.sshp_layout.addWidget(self.enable_crcl_cb)
-        self.sshp_layout.addWidget(self.enable_tri_cb)
         self.main_layout.addLayout(self.sshp_layout)
 
     def _enable_complex_shapes(self):
         self.cshp_layout = QtWidgets.QHBoxLayout()
-        self.enable_clvr_cb = QtWidgets.QCheckBox('Clover')
-        self.enable_str_cb = QtWidgets.QCheckBox('Star')
         self.enable_hrt_cb = QtWidgets.QCheckBox('Heart')
         self.enable_ptgn_cb = QtWidgets.QCheckBox('Pentagon')
-        self.enable_trpd_cb = QtWidgets.QCheckBox('Trapazoid')
-        self.cshp_layout.addWidget(self.enable_clvr_cb)
-        self.cshp_layout.addWidget(self.enable_str_cb)
         self.cshp_layout.addWidget(self.enable_hrt_cb)
         self.cshp_layout.addWidget(self.enable_ptgn_cb)
-        self.cshp_layout.addWidget(self.enable_trpd_cb)
         self.main_layout.addLayout(self.cshp_layout)
 
     def _mk_btn_layout(self):
@@ -121,7 +111,7 @@ class ToyGenWin(QtWidgets.QDialog):
 
 class ChildToy():
     def __init__(self):
-        self.box_color = [0, 0, 100]
+        self.box_color = [1, 1, 1]
         self.block_color = [0, 0, 255]
         self.size = 6
         self.hole = 3
@@ -145,18 +135,24 @@ class ChildToy():
         ''' Give Box and Lid Colors '''
         all_objects = cmds.ls(dag=True, long=False, type='transform')
         box = []
+        sg = self.makeBoxMaterial()
         for obj in all_objects:
             if 'ShapeSortingCube' in obj.lower():
                 box.append(obj)
         for obj in box:
-            cmds.connectAttr(force=True)
-            shader = cmds.createNode('standardSurface', asShader=True, name=
-                            'box_material')
-        pass
-    
+            cmds.sets(obj, edit=True, forceElement=sg)
+            cmds.sets(obj, e=True, forceElement=sg)
 
-    def assignBlocksColors(self):
-        ''' Give Blocks Colors'''
+    def makeBoxMaterial(self):
+        surface = cmds.shadingNode('standardSurface', asShader=True,
+                                   name='ShapeSortingCubeSurface')
+        cmds.setAttr(f"{surface}.baseColor", self.block_color[0],
+                     self.block_color[1], self.block_color[2], type="double3")
+        sg = cmds.sets(renderable=True, noSurfaceShader=True, empty=True,
+                       name='surfaceGroup1')
+        cmds.connectAttr(f"{surface}.outColor", f"{sg}.surfaceShader",
+                         force=True)               
+        return sg
 
     def mkFloor(self):
         """ Makes Floor"""
@@ -264,9 +260,9 @@ class ChildToy():
 
     def convertsPlaneToBlock(self, shape_name):
         """ Make Plane Into Block"""
-        cmds.select(f"{shape_name[0]}.f[0:]", replace=True)
+        cmds.select(f"{shape_name[0]}.f[*]", replace=True)
         shape_block = cmds.duplicate(shape_name[0], name='block1')
-        cmds.select(f"{shape_block[0]}.f[0:]", replace=True)
+        cmds.select(f"{shape_block[0]}.f[*]", replace=True)
         cmds.polyExtrudeFacet(thickness=self.size/2)
         cmds.select({shape_block[0]})
         cmds.rotate(90, 0, 0)
@@ -312,38 +308,6 @@ class ChildToy():
                                    subdivisionsHeight=1, subdivisionsWidth=1)
         cmds.scale(self.shape_area, 0, (self.shape_area)/3)
         return rectangle_plane
-    
-    def mkCloverPlane(self):
-        """ Makes Clover Shapes """
-        clover_plane = cmds.polyDisc(subdivisions=1, sides=10)
-        cmds.rotate(0, -18, 0, relative=True)
-        cmds.select(f"{clover_plane[0]}.vtx[1]", add=True, replace=True)
-        cmds.select(f"{clover_plane[0]}.vtx[3]", add=True)
-        cmds.select(f"{clover_plane[0]}.vtx[5]", add=True)
-        cmds.select(f"{clover_plane[0]}.vtx[7]", add=True)
-        cmds.select(f"{clover_plane[0]}.vtx[9]", add=True)
-        cmds.scale(.55, .55, .55, relative=True)
-        cmds.select(clover_plane[0], replace=True)
-        cmds.rename('cloverPlane1')
-        cmds.scale(self.hole/self.size, self.hole/self.size, 
-                   self.hole/self.size, relative=True)
-        return clover_plane
-    
-    def mkStarPlane(self):
-        """ Makes Star Shapes """
-        star_plane = cmds.polyDisc(subdivisions=0, sides=10)
-        cmds.rotate(0, -18, 0, relative=True)
-        cmds.select(f"{star_plane[0]}.vtx[1]", add=True, replace=True)
-        cmds.select(f"{star_plane[0]}.vtx[3]", add=True)
-        cmds.select(f"{star_plane[0]}.vtx[5]", add=True)
-        cmds.select(f"{star_plane[0]}.vtx[7]", add=True)
-        cmds.select(f"{star_plane[0]}.vtx[9]", add=True)
-        cmds.scale(.55, .55, .55, relative=True)
-        cmds.select(star_plane[0], replace=True)
-        cmds.rename('starPlane1')
-        scale = (self.hole/self.size)+(self.size/(100))
-        cmds.scale(scale, scale, scale, relative=True)
-        return star_plane
         
     def mkCirclePlane(self):
         """ Makes Circle Shapes """
@@ -367,22 +331,6 @@ class ChildToy():
         cmds.scale(self.shape_size, self.shape_size, (self.shape_size) +
                    (self.size/(100)))
         return heart_plane
-        
-    def mkTriangleplane(self):
-        """ Makes Triangle Shapes """
-        triangle_plane = cmds.polyDisc(subdivisions=0,
-                        radius=self.hole/self.size)
-        cmds.setAttr(f'{triangle_plane[1]}.heightBaseline', .25)
-        cmds.rename('trianglePlane1')
-        return triangle_plane
-        
-    def mkPentagonplane(self):
-        """ Makes Pentagon Shapes """
-        pentagon_plane = cmds.polyDisc(sides=5, subdivisions=0, 
-                        radius=self.hole/self.size)
-        cmds.setAttr(f'{pentagon_plane[1]}.heightBaseline', .1)
-        cmds.rename('pentagonPlane1')
-        return pentagon_plane
         
     def mkTrapazoidPlane(self):
         """ Makes Trapazoid Shapes """
@@ -469,12 +417,26 @@ class ChildToy():
         self.mkLid()
         self.editLidPivot()
         self.mkFloor()
-  
+
+    def buildshapes(self):
+        number = random.randrange(0, 4, 1)
+        if number == 0:
+            shape = self.mkRectanglePlane()
+        if number == 1:
+            shape = self.mkHeartPlane()
+        if number == 2:
+            shape = self.mkCirclePlane()
+        if number == 3:
+            shape = self.mkSquarePlane()
+        if number == 4:
+            shape = self.mkTrapazoidPlane()
+        return shape
+    
     def build(self):
         self.mkNonShapes()
         for idx in range(1, (self.hole*4)+1):
             # TODO: implement random
-            shape_name = self.mkRectanglePlane()
+            shape_name = self.buildshapes()
             shape_block = self.convertsPlaneToBlock(shape_name)
             shape_height = self.getShapeHeight(shape_name)
             self.editShapePivotCenter(shape_block)
@@ -482,9 +444,8 @@ class ChildToy():
             self.movePlanesToOneSide(shape_name, idx)
             self.rotatePlanestoWholeBox(shape_name, idx)
             self.mergePlanesToBox()
+        self.assignBoxColor()
         self.mkGroup()
-        print(self.hole)
-        print(self.size)
 
 if __name__ == "__main__":
     toy1 = ChildToy()
