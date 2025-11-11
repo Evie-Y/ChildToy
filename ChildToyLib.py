@@ -10,125 +10,120 @@ def get_maya_main_win():
     main_win = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_win), QtWidgets.QWidget)
 
-class StairGenWin(QtWidgets.QDialog):
+class ToyGenWin(QtWidgets.QDialog):
     '''Child Toy Window Class'''
 
     def __init__(self):
         # runs the init code of the parent QDialog class
         super().__init__(parent=get_maya_main_win())
-        self.stairGen = ChildToy()
+        self.toyGen = ChildToy()
         self.setWindowTitle("Child Toy Generator")
-        self.resize(250, 250)
+        self.resize(250, 500)
         self._mk_main_layout()
         self._connect_signals()
 
     def _connect_signals(self):
         self.cancel_btn.clicked.connect(self.cancel)
         self.build_btn.clicked.connect(self.build)
-        self.enable_grp_name_cb.stateChanged.connect(self.toggle_grpname)
-
-    @QtCore.Slot()
-    def toggle_grpname(self):
-        is_custom_grpname_enabled = self.enable_grp_name_cb.isChecked()
-        self.grp_name_ledit.setDisabled(not is_custom_grpname_enabled)
         
-
     def cancel(self):
         self.close()
 
     @QtCore.Slot()
     def build(self):
-        self._update_stairgen_properties()
-        self.stairGen.build()
+        self._update_toyGen_properties()
+        self.toyGen.build()
 
-    def _update_stairgen_properties(self):
-        self.stairGen.__init__() # reset properties to default
-        self.stairGen.step_count = self.steps_spnbx.value()
-        # total_rise
-        self.stairGen.total_rise = self.total_rise_dsnbx.value()
-        # run
-        self.stairGen.run = self.run_spnbx.value()
-        # width
-        self.stairGen.width = self.width_dsnbx.value()
-        self.stairGen.grp_name = self.grp_name_ledit.text()
+    def _update_toyGen_properties(self):
+        self.toyGen.__init__()  # reset properties to default
+        self.toyGen.hole = self.hole_spnbx.value()
+        print(self.toyGen.holes)
+        self.toyGen.size = self.size_spnbx.value()
+        print(self.toyGen.box)
 
     def _mk_main_layout(self):
         # Create vertical box layout
         self.main_layout = QtWidgets.QVBoxLayout()
-        self._add_name_label()
-        # label | text field
         self._add_form_layout()
+        self._enable_simple_shapes()
+        self._enable_complex_shapes()
         self._mk_btn_layout()
         # Set Dialog window to use main layout
         self.setLayout(self.main_layout)
 
     def _add_form_layout(self):
         self.form_layout = QtWidgets.QFormLayout()
-        self._add_steps()
-        self._add_rise()
-        self._add_run()
-        self._add_width()
-        self._enable_grp_name()
-        # | 'Enter Your Name' |
-        self._add_grp_name()
+        self._add_size()
+        self._add_holes()
+        self._add_color_box()
+        self._add_color_blocks()
         self.main_layout.addLayout(self.form_layout)
 
-    def _enable_grp_name(self):
-        self.enable_grp_name_cb = QtWidgets.QCheckBox('Enable Group Naming')
-        self.form_layout.addRow(self.enable_grp_name_cb)
+    def _add_size(self):
+        self.size_spnbx = QtWidgets.QSpinBox()
+        self.size_spnbx.setValue(5)
+        self.size_spnbx.setMaximum(50)
+        self.size_spnbx.setMinimum(1)
+        self.form_layout.addRow('Size: ', self.size_spnbx)
 
-    def _add_grp_name(self):
-        self.grp_name_ledit = QtWidgets.QLineEdit('Stair')
-        self.grp_name_ledit.setDisabled(True)
-        self.form_layout.addRow('Group Name:', self.grp_name_ledit)
+    def _add_holes(self):
+        self.hole_spnbx = QtWidgets.QSpinBox()
+        self.hole_spnbx.setValue(4)
+        self.hole_spnbx.setMaximum(4)
+        self.hole_spnbx.setMinimum(1)
+        self.form_layout.addRow('Holes: ', self.hole_spnbx)
+    
+    def _add_color_box(self):
+        self.color_cldlg = QtWidgets.QColorDialog()
+        self.form_layout.addRow('Box Color: ', self.color_cldlg)
 
-    def _add_width(self):
-        self.width_dsnbx = QtWidgets.QDoubleSpinBox()
-        self.width_dsnbx.setValue(10)
-        self.width_dsnbx.setSingleStep(0.5)
-        self.form_layout.addRow('Width:', self.width_dsnbx)
+    def _add_color_blocks(self):
+        self.color_blocks_cldlg = QtWidgets.QColorDialog()
+        self.form_layout.addRow('Blocks Color: ', self.color_blocks_cldlg)
 
-    def _add_run(self):
-        self.run_spnbx = QtWidgets.QSpinBox()
-        self.run_spnbx.setValue(60)
-        self.form_layout.addRow('Run:', self.run_spnbx)
+    def _enable_simple_shapes(self):
+        self.sshp_layout = QtWidgets.QHBoxLayout()
+        self.enable_rect_cb = QtWidgets.QCheckBox('Rectangle')
+        self.enable_sqr_cb = QtWidgets.QCheckBox('Square')
+        self.enable_crcl_cb = QtWidgets.QCheckBox('Circle')
+        self.enable_tri_cb = QtWidgets.QCheckBox('Triangle')
+        self.sshp_layout.addWidget(self.enable_rect_cb)
+        self.sshp_layout.addWidget(self.enable_sqr_cb)
+        self.sshp_layout.addWidget(self.enable_crcl_cb)
+        self.sshp_layout.addWidget(self.enable_tri_cb)
+        self.main_layout.addLayout(self.sshp_layout)
 
-
-    def _add_rise(self):
-        self.total_rise_dsnbx = QtWidgets.QDoubleSpinBox()
-        self.total_rise_dsnbx.setValue(15)
-        self.total_rise_dsnbx.setSingleStep(0.5)
-        self.form_layout.addRow('Total Rise:', self.total_rise_dsnbx)
-
-
-    def _add_steps(self):
-        self.steps_spnbx = QtWidgets.QSpinBox()
-        self.steps_spnbx.setValue(5)
-        self.form_layout.addRow('Steps:', self.steps_spnbx)
-
-    def _add_name_label(self):
-        self.name_lbl = QtWidgets.QLabel('Stair Generator')
-        self.name_lbl.setStyleSheet('background-color: white;'
-                                    'color: red;'
-                                    'font: bold 24px')
-        self.name_lbl.setAlignment(Qt.AlignCenter)
-        self.main_layout.addWidget(self.name_lbl)
+    def _enable_complex_shapes(self):
+        self.cshp_layout = QtWidgets.QHBoxLayout()
+        self.enable_clvr_cb = QtWidgets.QCheckBox('Clover')
+        self.enable_str_cb = QtWidgets.QCheckBox('Star')
+        self.enable_hrt_cb = QtWidgets.QCheckBox('Heart')
+        self.enable_ptgn_cb = QtWidgets.QCheckBox('Pentagon')
+        self.enable_trpd_cb = QtWidgets.QCheckBox('Trapazoid')
+        self.cshp_layout.addWidget(self.enable_clvr_cb)
+        self.cshp_layout.addWidget(self.enable_str_cb)
+        self.cshp_layout.addWidget(self.enable_hrt_cb)
+        self.cshp_layout.addWidget(self.enable_ptgn_cb)
+        self.cshp_layout.addWidget(self.enable_trpd_cb)
+        self.main_layout.addLayout(self.cshp_layout)
 
     def _mk_btn_layout(self):
         self.btn_layout = QtWidgets.QHBoxLayout()
         # Create 'build' button
         self.build_btn = QtWidgets.QPushButton('Build')
-        # Create a 'cancel' button
+        self.random_btn = QtWidgets.QPushButton('Randomize')
         self.cancel_btn = QtWidgets.QPushButton('Cancel')
         # Add the build button to first row
         self.btn_layout.addWidget(self.build_btn)
-        # Add the cancel button to secound row
+        self.btn_layout.addWidget(self.random_btn)
         self.btn_layout.addWidget(self.cancel_btn)
         self.main_layout.addLayout(self.btn_layout)
 
 class ChildToy():
     def __init__(self):
-        self.size = 3
+        self.box_color = [0, 0, 100]
+        self.block_color = [0, 0, 255]
+        self.size = 6
         self.hole = 3
         self.shape_size = (self.size/self.hole)
         if self.shape_size >= self.size:
@@ -488,6 +483,8 @@ class ChildToy():
             self.rotatePlanestoWholeBox(shape_name, idx)
             self.mergePlanesToBox()
         self.mkGroup()
+        print(self.hole)
+        print(self.size)
 
 if __name__ == "__main__":
     toy1 = ChildToy()
