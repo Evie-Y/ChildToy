@@ -1,5 +1,5 @@
 # ChildToy
-<<<<<<< HEAD
+<<<<<<<
 # Creating a procedural child shape sorting toy in Maya
 
 Creates a primitive cube shape based on the input dimensions given.
